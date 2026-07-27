@@ -8,7 +8,7 @@
  */
 window.PLANNER_DATA = {
   updated_at: "2026-07-27",
-  principal_as_of: "2026-01-09",
+  principal_as_of: "2026-07-27",
   timezone: "Asia/Shanghai",
   /** 优先在线仪表盘，失败用本地 bills.json（含额度/账单日/YY） */
   bill_sources: [
@@ -41,7 +41,7 @@ window.PLANNER_DATA = {
    * amortize: epi=等额本息 | installment=每期近似全扣本金
    */
   loans: [
-    { category: "房贷",       bank: "建行", monthly: 3018, due_day: 15, principal_total: 670000, principal_left: 589573, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 3.1, enabled: true },
+    { category: "房贷",       bank: "建行", monthly: 3014, due_day: 15, principal_total: 670000, principal_left: 579406.84, principal_as_of: "2026-07-27", amortize: "epi", rate_annual: 3.2, enabled: true },
     { category: "车贷",       bank: "招行", monthly: 2834, due_day: 28, principal_total: 170000, principal_left: 124666, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 4.5, enabled: true },
     { category: "邮储贷款",   bank: "邮储", monthly: 2271, due_day: 16, principal_total: 125000, principal_left: 120334, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 4.0, enabled: true },
     { category: "融E借",      bank: "工行", monthly: 850,  due_day: 19, principal_total: 300000, principal_left: 300000, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 5.5, enabled: true },
