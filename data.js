@@ -1,52 +1,38 @@
 /**
- * 信用卡 & 长期贷款配置
- * ------------------------------------------------
- * 修改本文件后刷新页面即可生效（GitHub Pages 部署后需重新推送）。
+ * 信用卡 & 长期贷款配置（真实数据）
+ * 修改后推送即可更新 GitHub Pages。
  *
- * cards 字段说明：
- *   name          - 卡片名称
- *   statement_day - 账单日（每月几号出账，1-31）
- *   due_day       - 还款日（每月几号到期，1-31）
- *   note          - 备注（可选）
- *   enabled       - 是否参与「今天刷哪张最划算」推荐
- *
- * loans 字段说明：
- *   name          - 贷款/债务名称
- *   amount        - 每月固定还款金额（元）
- *   due_day       - 每月还款日（1-31）
- *   note          - 备注（可选）
- *   enabled       - 是否显示
- *
- * ⚠️ statement_day 目前根据账单邮件发送日估算，请用你实际的账单日覆盖。
- *    due_day 根据近期电子账单还款日推断。
+ * cards:
+ *   name, last4, statement_day(出账/账单日), due_day(还款日), short, color, enabled
+ * loans:
+ *   category, bank, monthly, due_day, principal_total, principal_left, note, enabled
  */
 window.PLANNER_DATA = {
   updated_at: "2026-07-27",
+  principal_as_of: "2026-01-09",
   timezone: "Asia/Shanghai",
 
   cards: [
-    // statement_day 为估算值（≈账单邮件发送日），请按真实账单日修正
-    { name: "浦发银行", statement_day: 5,  due_day: 24, note: "账单日待确认", enabled: true },
-    { name: "邮储银行", statement_day: 7,  due_day: 27, note: "账单日待确认", enabled: true },
-    { name: "招商银行", statement_day: 19, due_day: 6,  note: "含分期/e招贷等同日还款", enabled: true },
-    { name: "兴业银行", statement_day: 11, due_day: 30, note: "账单日待确认", enabled: true },
-    { name: "光大银行", statement_day: 14, due_day: 31, note: "账单日待确认", enabled: true },
-    { name: "平安银行", statement_day: 14, due_day: 1,  note: "账单日待确认", enabled: true },
-    { name: "广发银行", statement_day: 18, due_day: 6,  note: "账单日待确认", enabled: true },
-    { name: "交通银行", statement_day: 22, due_day: 15, note: "账单日待确认", enabled: true },
-    { name: "工商银行", statement_day: 2,  due_day: 19, note: "账单日待确认", enabled: true },
-    { name: "民生银行", statement_day: 28, due_day: 17, note: "账单日待确认", enabled: true },
-    { name: "建设银行", statement_day: 28, due_day: 15, note: "账单日待确认", enabled: true },
-    { name: "长安银行 (YY)", statement_day: 22, due_day: 15, note: "YY 邮箱", enabled: true }
+    { name: "工商银行", last4: "9889", statement_day: 1,  due_day: 15, short: "工", color: "#c41e3a", enabled: true },
+    { name: "浦发银行", last4: "8182", statement_day: 4,  due_day: 24, short: "浦", color: "#003b8e", enabled: true },
+    { name: "邮储银行", last4: "6983", statement_day: 6,  due_day: 24, short: "邮", color: "#007a3d", enabled: true },
+    { name: "兴业银行", last4: "1561", statement_day: 10, due_day: 29, short: "兴", color: "#004b87", enabled: true },
+    { name: "光大银行", last4: "8685", statement_day: 12, due_day: 31, short: "光", color: "#6b2d8b", enabled: true },
+    { name: "平安银行", last4: "9918", statement_day: 13, due_day: 1,  short: "平", color: "#f60", enabled: true },
+    { name: "广发银行", last4: "8948", statement_day: 17, due_day: 6,  short: "广", color: "#e60012", enabled: true },
+    { name: "招商银行", last4: "6478", statement_day: 18, due_day: 5,  short: "招", color: "#e60012", enabled: true },
+    { name: "交通银行", last4: "8940", statement_day: 21, due_day: 15, short: "交", color: "#003b70", enabled: true },
+    { name: "建设银行", last4: "2504", statement_day: 26, due_day: 15, short: "建", color: "#0066b3", enabled: true },
+    { name: "民生银行", last4: "2821", statement_day: 27, due_day: 16, short: "民", color: "#00a0e9", enabled: true }
   ],
 
-  /**
-   * 长期贷款 / 固定月供 —— 请按你的真实情况填写后推送更新
-   * 示例已注释，取消注释并改数字即可
-   */
   loans: [
-    // { name: "房贷-XX银行", amount: 8500, due_day: 10, note: "等额本息", enabled: true },
-    // { name: "车贷", amount: 3200, due_day: 18, note: "", enabled: true },
-    // { name: "消费分期固定", amount: 1500, due_day: 6, note: "招行", enabled: true }
+    { category: "房贷",     bank: "建行", monthly: 3018, due_day: 15, principal_total: 670000, principal_left: 589573, note: "", enabled: true },
+    { category: "车贷",     bank: "招行", monthly: 2834, due_day: 28, principal_total: 170000, principal_left: 124666, note: "", enabled: true },
+    { category: "邮储贷款", bank: "邮储", monthly: 2271, due_day: 16, principal_total: 125000, principal_left: 120334, note: "", enabled: true },
+    { category: "融E借",    bank: "工行", monthly: 850,  due_day: 19, principal_total: 300000, principal_left: 300000, note: "", enabled: true },
+    { category: "惠民贷",   bank: "交行", monthly: 523,  due_day: 15, principal_total: 150000, principal_left: 100693, note: "", enabled: true },
+    { category: "光速贷",   bank: "光大", monthly: 333,  due_day: 20, principal_total: 116000, principal_left: 115887, note: "", enabled: true },
+    { category: "招行分期卡", bank: "招行", monthly: 2795, due_day: 6,  principal_total: 64798,  principal_left: 59548,  note: "分期卡月供", enabled: true }
   ]
 };

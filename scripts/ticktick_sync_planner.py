@@ -169,13 +169,15 @@ def build_tasks(data: dict, months: int = 2) -> list[dict]:
                 continue
             days_until = (d - today).days
             priority = 5 if days_until <= 3 else 3 if days_until <= 7 else 1
+            last4 = c.get("last4") or ""
+            title_name = c["name"] + (f" {last4}" if last4 else "")
             tasks.append({
-                "title": f"💳 {c['name']} 还款日",
+                "title": f"💳 {title_name} 还款日",
                 "content": (
-                    f"固定还款日提醒（刷卡规划）\n"
-                    f"账单日：每月 {c.get('statement_day')} 日\n"
+                    f"固定还款日提醒（刷卡规划 / 卡神日历）\n"
+                    f"出账日：每月 {c.get('statement_day')} 日\n"
                     f"还款日：{d.isoformat()}\n"
-                    f"备注：{c.get('note') or '—'}"
+                    f"尾号：{last4 or '—'}"
                 ),
                 "due_date": d.isoformat(),
                 "priority": priority,
@@ -188,16 +190,22 @@ def build_tasks(data: dict, months: int = 2) -> list[dict]:
             if d < today:
                 continue
             days_until = (d - today).days
-            amount = float(loan.get("amount") or 0)
+            # 兼容 amount / monthly 字段
+            amount = float(loan.get("monthly") if loan.get("monthly") is not None else loan.get("amount") or 0)
+            name = loan.get("category") or loan.get("name") or "固定债务"
+            bank = loan.get("bank") or ""
             priority = 5 if days_until <= 3 else 3 if days_until <= 7 else 1
+            left = loan.get("principal_left")
+            content_lines = [
+                "固定债务月供",
+                f"金额：¥{amount:,.2f}",
+                f"还款日：{d.isoformat()}",
+            ]
+            if left is not None:
+                content_lines.append(f"剩余本金：¥{float(left):,.0f}")
             tasks.append({
-                "title": f"💰 {loan['name']} {amount:.2f} 元",
-                "content": (
-                    f"固定债务月供\n"
-                    f"金额：¥{amount:,.2f}\n"
-                    f"还款日：{d.isoformat()}\n"
-                    f"备注：{loan.get('note') or '—'}"
-                ),
+                "title": f"💰 {name}·{bank} {amount:.0f} 元" if bank else f"💰 {name} {amount:.0f} 元",
+                "content": "\n".join(content_lines),
                 "due_date": d.isoformat(),
                 "priority": priority,
                 "reminders": ["TRIGGER:-P1D", "TRIGGER:-PT18H"],
