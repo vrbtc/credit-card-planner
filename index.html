@@ -342,9 +342,9 @@ tr.best { background: rgba(74,222,128,.07); }
   <div class="help">
     <h3>数据说明</h3>
     <ul>
-      <li><strong>邮件为准</strong>：账单日、还款日、待还金额、信用额度均优先取自邮箱账单；与静态配置冲突时覆盖配置。</li>
-      <li><strong>YY 卡</strong>：来自 QQ 邮箱（label=YY）的账单会强制标注橙色 <strong>YY</strong> 徽章。</li>
-      <li><strong>信用卡金额/额度</strong>：优先在线 <code>bank-bill-extractor/data.json</code>，失败用本地 <code>bills.json</code>（脚本 <code>refresh_bills_from_email.py</code> 可刷新）。</li>
+      <li><strong>合并规则</strong>：邮件有的字段（还款日、账单日、金额、已解析额度）一律以邮件为准；邮件没有的字段用 <code>data.js</code> 人工补充（如你提供的总额度、现账单日）。表格里会标「邮件」或「补充」。</li>
+      <li><strong>YY 卡</strong>：QQ 邮箱（label=YY）强制橙色 <strong>YY</strong> 徽章。</li>
+      <li><strong>账单金额</strong>：来自邮箱提取（本地 <code>bills.json</code> / 在线仪表盘）。</li>
       <li><strong>月供金额</strong>：按你配置的固定月还款，一般不变（除非银行调额/提前结清）。</li>
       <li><strong>剩余本金估算</strong>：快照日 <code>principal_as_of</code>（如 2026-01-09）的 <code>principal_left</code> 起算；之后每过一个还款日按<strong>等额本息</strong>扣减：利息=剩余×年化/12，本金=月供−利息。房贷默认年化 3.1%（可在 data.js 改 <code>rate_annual</code>）。分期卡按月供近似全扣本金。标「估算」请以银行 APP 为准。</li>
       <li>出账日当天及之后消费计入下期；今日免息 = 今天到对应还款日的天数。</li>
@@ -445,27 +445,35 @@ tr.best { background: rgba(74,222,128,.07); }
     return (name || "") + "|" + ((label || "").toString().trim());
   }
 
-  /** 从邮件+兜底配置构建卡列表（邮件覆盖账单日/还款日/额度） */
+  /**
+   * 合并规则：
+   * - 邮件有值 → 覆盖（以邮件为准）
+   * - 邮件无值 → 保留 data.js 人工补充（你提供的总额度/现账单日）
+   */
   function rebuildCardsFromEmail() {
     const byKey = {};
-    // 1) 兜底
+    // 1) 人工补充底稿
     fallbackCards.forEach(function (c) {
       const label = (c.source_label || "").toString().trim();
       const key = cardKey(c.name, label);
+      const hasLim = c.credit_limit != null && c.credit_limit !== "" && Number(c.credit_limit) > 0;
       byKey[key] = {
         name: c.name,
         last4: c.last4 || "",
-        statement_day: c.statement_day,
-        due_day: c.due_day,
+        statement_day: c.statement_day != null ? c.statement_day : null,
+        due_day: c.due_day != null ? c.due_day : null,
         short: c.short,
         color: c.color,
         source_label: label,
-        credit_limit: null,
+        credit_limit: hasLim ? Number(c.credit_limit) : null,
+        limit_source: hasLim ? "manual" : null,
+        stmt_source: c.statement_day != null ? "manual" : null,
+        due_source: c.due_day != null ? "manual" : null,
         email_driven: false,
         enabled: true
       };
     });
-    // 2) 邮件覆盖 / 新增（如长安 YY）
+    // 2) 邮件覆盖：仅当邮件字段有值时写入
     billList.forEach(function (b) {
       const bankName = b.bank_name || String(b.bank || "").replace(/\s*\(YY\)\s*$/i, "").trim();
       const label = billLabel(b);
@@ -473,50 +481,73 @@ tr.best { background: rgba(74,222,128,.07); }
       if (!byKey[key]) {
         byKey[key] = {
           name: bankName,
-          last4: b.last4 || "",
-          statement_day: b.statement_day || null,
-          due_day: b.due_day || null,
+          last4: "",
+          statement_day: null,
+          due_day: null,
           short: (bankName || "?").replace(/银行|信用卡/g, "").charAt(0) || "?",
           color: "#475569",
           source_label: label,
-          credit_limit: b.credit_limit || null,
+          credit_limit: null,
+          limit_source: null,
+          stmt_source: null,
+          due_source: null,
           email_driven: true,
           enabled: true
         };
       }
       const card = byKey[key];
-      // 以邮件为准覆盖
-      if (b.due_day) card.due_day = b.due_day;
-      else if (b.due_date) {
-        try { card.due_day = parseInt(String(b.due_date).slice(8, 10), 10); } catch (e) {}
-      }
-      if (b.statement_day) card.statement_day = b.statement_day;
-      else if (b.statement_date) {
-        try { card.statement_day = parseInt(String(b.statement_date).slice(8, 10), 10); } catch (e) {}
-      }
-      if (b.credit_limit) {
-        const lim = Number(b.credit_limit);
-        if (!card.credit_limit || lim > card.credit_limit) card.credit_limit = lim;
-      }
-      if (b.last4) card.last4 = b.last4;
       card.email_driven = true;
       card.source_label = label || card.source_label;
+
+      if (b.due_day) {
+        card.due_day = Number(b.due_day);
+        card.due_source = "email";
+      } else if (b.due_date) {
+        try {
+          card.due_day = parseInt(String(b.due_date).slice(8, 10), 10);
+          card.due_source = "email";
+        } catch (e) {}
+      }
+      if (b.statement_day) {
+        card.statement_day = Number(b.statement_day);
+        card.stmt_source = "email";
+      } else if (b.statement_date) {
+        try {
+          card.statement_day = parseInt(String(b.statement_date).slice(8, 10), 10);
+          card.stmt_source = "email";
+        } catch (e) {}
+      }
+      if (b.credit_limit != null && Number(b.credit_limit) > 0) {
+        card.credit_limit = Number(b.credit_limit);
+        card.limit_source = "email";
+      }
+      if (b.last4) card.last4 = b.last4;
     });
-    // 对每张卡：用「最近未过期账单」的 due_day / statement_day 再覆盖一次
+    // 3) 最近一期有效账单再覆盖（仍仅覆盖有值字段）
     Object.keys(byKey).forEach(function (key) {
       const card = byKey[key];
       const latest = latestBillForCard(card);
       if (latest) {
         if (latest.due_date) {
-          try { card.due_day = parseInt(latest.due_date.slice(8, 10), 10); } catch (e) {}
+          try {
+            card.due_day = parseInt(latest.due_date.slice(8, 10), 10);
+            card.due_source = "email";
+          } catch (e) {}
         }
-        if (latest.statement_day) card.statement_day = latest.statement_day;
-        if (latest.statement_date && !card.statement_day) {
-          try { card.statement_day = parseInt(latest.statement_date.slice(8, 10), 10); } catch (e) {}
+        if (latest.statement_day) {
+          card.statement_day = Number(latest.statement_day);
+          card.stmt_source = "email";
+        } else if (latest.statement_date) {
+          try {
+            card.statement_day = parseInt(latest.statement_date.slice(8, 10), 10);
+            card.stmt_source = "email";
+          } catch (e) {}
         }
-        if (latest.credit_limit) card.credit_limit = Number(latest.credit_limit);
+        if (latest.credit_limit != null && Number(latest.credit_limit) > 0) {
+          card.credit_limit = Number(latest.credit_limit);
+          card.limit_source = "email";
+        }
       }
-      // 缺省保护
       if (!card.statement_day) card.statement_day = 1;
       if (!card.due_day) card.due_day = 15;
     });
@@ -811,16 +842,20 @@ tr.best { background: rgba(74,222,128,.07); }
           (bill.past ? '<div class="sub">已过期账单</div>' : "")
         : '<span style="color:var(--muted)">—</span>';
       const dueHtml = bill && bill.due_date
-        ? bill.due_date + (c.email_driven ? '<div class="sub">邮件</div>' : "")
-        : "每月 " + c.due_day + " 日";
-      const src = c.email_driven ? "邮件" : "配置";
+        ? bill.due_date + '<div class="sub">邮件</div>'
+        : "每月 " + c.due_day + " 日" + (c.due_source === "manual" ? '<div class="sub">补充</div>' : "");
+      const limSrc = c.limit_source === "email" ? "邮件" : (c.limit_source === "manual" ? "补充" : "");
+      const stmtSrc = c.stmt_source === "email" ? "邮件" : (c.stmt_source === "manual" ? "补充" : "");
       return '<tr class="' + (idx === 0 ? "best" : "") + '">' +
         '<td class="name-cell"><div style="display:flex;align-items:center;gap:8px">' + ico(c, "md") +
           "<div>" + esc(c.name) + yyBadge(c) + (idx === 0 ? '<span class="pill tag">推荐</span>' : "") +
-          '<div class="sub">尾号 ' + esc(c.last4 || "—") + " · " + src + "</div></div></div></td>" +
-        '<td class="num limit-val">' + fmtLimit(lim) + "</td>" +
-        '<td class="num">每月 ' + c.statement_day + " 日</td>" +
-        '<td class="num">每月 ' + c.due_day + " 日</td>" +
+          '<div class="sub">尾号 ' + esc(c.last4 || "—") + "</div></div></div></td>" +
+        '<td class="num limit-val">' + fmtLimit(lim) +
+          (limSrc ? '<div class="sub">' + limSrc + "</div>" : "") + "</td>" +
+        '<td class="num">每月 ' + c.statement_day + " 日" +
+          (stmtSrc ? '<div class="sub">' + stmtSrc + "</div>" : "") + "</td>" +
+        '<td class="num">每月 ' + c.due_day + " 日" +
+          (c.due_source === "email" ? '<div class="sub">邮件</div>' : (c.due_source === "manual" ? '<div class="sub">补充</div>' : "")) + "</td>" +
         '<td class="num">' + amtHtml + "</td>" +
         '<td class="num">' + dueHtml + "</td>" +
         "<td>" + freePill(i.freeDays) + "</td>" +
