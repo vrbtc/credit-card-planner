@@ -346,7 +346,7 @@ tr.best { background: rgba(74,222,128,.07); }
       <li><strong>YY 卡</strong>：来自 QQ 邮箱（label=YY）的账单会强制标注橙色 <strong>YY</strong> 徽章。</li>
       <li><strong>信用卡金额/额度</strong>：优先在线 <code>bank-bill-extractor/data.json</code>，失败用本地 <code>bills.json</code>（脚本 <code>refresh_bills_from_email.py</code> 可刷新）。</li>
       <li><strong>月供金额</strong>：按你配置的固定月还款，一般不变（除非银行调额/提前结清）。</li>
-      <li><strong>剩余本金</strong>：不是银行实时接口。<code>principal_left</code> 是 <code>principal_as_of</code> 日的快照；页面从该日起按每期还款<strong>估算递减</strong>（等额本息用利率模拟本金、分期卡按月扣减）。标有「估算」的数字请以银行 APP 为准，定期回填快照更准。</li>
+      <li><strong>剩余本金估算</strong>：快照日 <code>principal_as_of</code>（如 2026-01-09）的 <code>principal_left</code> 起算；之后每过一个还款日按<strong>等额本息</strong>扣减：利息=剩余×年化/12，本金=月供−利息。房贷默认年化 3.1%（可在 data.js 改 <code>rate_annual</code>）。分期卡按月供近似全扣本金。标「估算」请以银行 APP 为准。</li>
       <li>出账日当天及之后消费计入下期；今日免息 = 今天到对应还款日的天数。</li>
     </ul>
   </div>
@@ -617,14 +617,15 @@ tr.best { background: rgba(74,222,128,.07); }
   }
 
   // ---- 贷款剩余本金估算 ----
-  function parseAsOf() {
-    return parseYMD(DATA.principal_as_of) || today;
+  function parseAsOf(loan) {
+    // 优先每笔贷款自己的快照日，否则用全局 principal_as_of
+    const raw = (loan && loan.principal_as_of) || DATA.principal_as_of;
+    return parseYMD(raw) || today;
   }
   function countPaymentsPassed(asOf, until, dueDay) {
     // 还款日 in (asOf, until]
     let n = 0;
     let y = asOf.getFullYear(), m = asOf.getMonth();
-    // 最多扫 600 期
     for (let i = 0; i < 600; i++) {
       const due = dateOn(y, m, dueDay);
       if (due > until) break;
@@ -634,35 +635,77 @@ tr.best { background: rgba(74,222,128,.07); }
     }
     return n;
   }
+  /**
+   * 年化利率：支持 0.031 或 3.1（百分数）
+   * 房贷默认 3.1%，消费贷默认 4.5%（仅在未配置时）
+   */
+  function getAnnualRate(loan) {
+    let annual = loan.rate_annual;
+    if (annual == null || annual === "" || isNaN(Number(annual))) {
+      const cat = (loan.category || "") + (loan.note || "");
+      if (/房贷|按揭/.test(cat)) annual = 0.031;
+      else if (/分期/.test(cat)) annual = 0;
+      else annual = 0.045;
+    } else {
+      annual = Number(annual);
+    }
+    // 3.1 → 3.1%；0.031 保持不变
+    if (annual > 1) annual = annual / 100;
+    return annual;
+  }
+  /**
+   * 等额本息：从快照本金起，按已过还款日逐期扣减本金
+   * 利息 = 剩余本金 × 月利率；本金 = 月供 − 利息
+   */
   function estimatePrincipalLeft(loan, untilDate) {
     const base = Number(loan.principal_left || 0);
-    const asOf = parseAsOf();
+    const asOf = parseAsOf(loan);
     const until = sod(untilDate || today);
-    if (until <= asOf) return { left: base, payments: 0, estimated: false };
+    if (until <= asOf) {
+      return { left: base, payments: 0, estimated: false, rate: getAnnualRate(loan), interestTotal: 0, principalTotal: 0 };
+    }
 
     const monthly = Number(loan.monthly || 0);
     const type = loan.amortize || "epi";
     let P = base;
     let payments = 0;
+    let interestTotal = 0;
+    let principalTotal = 0;
+    const annual = getAnnualRate(loan);
 
-    if (type === "installment") {
+    if (type === "installment" || annual === 0) {
       const step = loan.principal_portion != null ? Number(loan.principal_portion) : monthly;
       payments = countPaymentsPassed(asOf, until, loan.due_day);
-      P = Math.max(0, base - payments * step);
-      return { left: P, payments: payments, estimated: payments > 0 };
+      principalTotal = Math.min(base, payments * step);
+      P = Math.max(0, base - principalTotal);
+      return {
+        left: P,
+        payments: payments,
+        estimated: payments > 0,
+        rate: annual,
+        interestTotal: 0,
+        principalTotal: principalTotal,
+        warn: null
+      };
     }
 
-    // 等额本息：按期用利率拆分利息/本金
-    const rMonth = Number(loan.rate_annual != null ? loan.rate_annual : 0.05) / 12;
+    const rMonth = annual / 12;
     let y = asOf.getFullYear(), m = asOf.getMonth();
+    let warn = null;
     for (let i = 0; i < 600; i++) {
       const due = dateOn(y, m, loan.due_day);
       if (due > until) break;
       if (due > asOf) {
         const interest = P * rMonth;
         let principalPay = monthly - interest;
-        if (principalPay < 0) principalPay = 0;
+        if (principalPay < 0) {
+          // 月供不足以覆盖利息：本金不降（或按配置允许负摊）
+          principalPay = 0;
+          warn = "月供低于当期利息，本金估算未减少（请核对利率/月供）";
+        }
         if (principalPay > P) principalPay = P;
+        interestTotal += interest;
+        principalTotal += principalPay;
         P -= principalPay;
         payments++;
         if (P <= 0.5) { P = 0; break; }
@@ -670,7 +713,15 @@ tr.best { background: rgba(74,222,128,.07); }
       m++;
       if (m > 11) { m = 0; y++; }
     }
-    return { left: Math.max(0, P), payments: payments, estimated: payments > 0 };
+    return {
+      left: Math.max(0, P),
+      payments: payments,
+      estimated: payments > 0,
+      rate: annual,
+      interestTotal: interestTotal,
+      principalTotal: principalTotal,
+      warn: warn
+    };
   }
 
   const today = sod(new Date());
@@ -779,7 +830,7 @@ tr.best { background: rgba(74,222,128,.07); }
 
   function renderLoans() {
     document.getElementById("loanAsOf").textContent =
-      "快照 " + (DATA.principal_as_of || "—") + " · 月供固定 · 剩余为本金估算";
+      "快照 " + (DATA.principal_as_of || "—") + " · 等额本息按年化拆本金/利息 · 非银行实时";
 
     const monthlyTotal = loans.reduce(function (s, l) { return s + Number(l.monthly || 0); }, 0);
     const snapTotal = loans.reduce(function (s, l) { return s + Number(l.principal_left || 0); }, 0);
@@ -799,16 +850,23 @@ tr.best { background: rgba(74,222,128,.07); }
     document.getElementById("loanTable").innerHTML = loanSorted.map(function (l) {
       const est = estimatePrincipalLeft(l, today);
       const reduced = Number(l.principal_left || 0) - est.left;
+      const ratePct = (est.rate * 100).toFixed(2).replace(/\.?0+$/, "");
+      const asOfStr = (l.principal_as_of || DATA.principal_as_of || "—");
       return "<tr><td class='name-cell'>" + esc(l.category) +
         (est.estimated ? '<span class="pill est">估算</span>' : "") + "</td>" +
         "<td>" + esc(l.bank) + "</td>" +
         '<td class="num" style="color:var(--orange)">' + fmtMoney(l.monthly) +
-          '<div class="sub">固定月供</div></td>' +
+          '<div class="sub">固定月供 · 年化 ' + ratePct + "%</div></td>" +
         '<td class="num">每月 ' + l.due_day + " 日</td>" +
         '<td class="num">' + fmtMoney(l.principal_total) + "</td>" +
-        '<td class="num">' + fmtMoney(l.principal_left) + "</td>" +
+        '<td class="num">' + fmtMoney(l.principal_left) +
+          '<div class="sub">快照 ' + esc(asOfStr) + "</div></td>" +
         '<td class="num" style="color:var(--purple);font-weight:700">' + fmtMoney(est.left) +
-          (est.payments ? '<div class="sub">已过 ' + est.payments + " 期 · 约减 " + fmtMoney(reduced) + "</div>" : "") +
+          (est.payments
+            ? '<div class="sub">已过 ' + est.payments + " 期 · 本金约减 " + fmtMoney(reduced) +
+              " · 利息约 " + fmtMoney(est.interestTotal) + "</div>"
+            : "") +
+          (est.warn ? '<div class="sub" style="color:var(--orange)">' + esc(est.warn) + "</div>" : "") +
         "</td></tr>";
     }).join("") +
       "<tr><td colspan='2' style='text-align:right;color:var(--muted)'>合计</td>" +

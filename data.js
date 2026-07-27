@@ -35,13 +35,18 @@ window.PLANNER_DATA = {
     { name: "长安银行", last4: "",    statement_day: 20, due_day: 15, short: "长", color: "#0d9488", source_label: "YY", enabled: true }
   ],
 
+  /**
+   * rate_annual: 年化利率，写 0.031 或 3.1 均可（3.1 表示 3.1%）
+   * principal_as_of: 可选，覆盖全局快照日
+   * amortize: epi=等额本息 | installment=每期近似全扣本金
+   */
   loans: [
-    { category: "房贷",       bank: "建行", monthly: 3018, due_day: 15, principal_total: 670000, principal_left: 589573, amortize: "epi", rate_annual: 0.031, enabled: true },
-    { category: "车贷",       bank: "招行", monthly: 2834, due_day: 28, principal_total: 170000, principal_left: 124666, amortize: "epi", rate_annual: 0.045, enabled: true },
-    { category: "邮储贷款",   bank: "邮储", monthly: 2271, due_day: 16, principal_total: 125000, principal_left: 120334, amortize: "epi", rate_annual: 0.040, enabled: true },
-    { category: "融E借",      bank: "工行", monthly: 850,  due_day: 19, principal_total: 300000, principal_left: 300000, amortize: "epi", rate_annual: 0.055, enabled: true },
-    { category: "惠民贷",     bank: "交行", monthly: 523,  due_day: 15, principal_total: 150000, principal_left: 100693, amortize: "epi", rate_annual: 0.045, enabled: true },
-    { category: "光速贷",     bank: "光大", monthly: 333,  due_day: 20, principal_total: 116000, principal_left: 115887, amortize: "epi", rate_annual: 0.060, enabled: true },
-    { category: "招行分期卡", bank: "招行", monthly: 2795, due_day: 6,  principal_total: 64798,  principal_left: 59548,  amortize: "installment", note: "分期月供近似全本金", enabled: true }
+    { category: "房贷",       bank: "建行", monthly: 3018, due_day: 15, principal_total: 670000, principal_left: 589573, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 3.1, enabled: true },
+    { category: "车贷",       bank: "招行", monthly: 2834, due_day: 28, principal_total: 170000, principal_left: 124666, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 4.5, enabled: true },
+    { category: "邮储贷款",   bank: "邮储", monthly: 2271, due_day: 16, principal_total: 125000, principal_left: 120334, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 4.0, enabled: true },
+    { category: "融E借",      bank: "工行", monthly: 850,  due_day: 19, principal_total: 300000, principal_left: 300000, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 5.5, enabled: true },
+    { category: "惠民贷",     bank: "交行", monthly: 523,  due_day: 15, principal_total: 150000, principal_left: 100693, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 4.5, enabled: true },
+    { category: "光速贷",     bank: "光大", monthly: 333,  due_day: 20, principal_total: 116000, principal_left: 115887, principal_as_of: "2026-01-09", amortize: "epi", rate_annual: 6.0, enabled: true },
+    { category: "招行分期卡", bank: "招行", monthly: 2795, due_day: 6,  principal_total: 64798,  principal_left: 59548,  principal_as_of: "2026-01-09", amortize: "installment", note: "分期月供近似全本金", enabled: true }
   ]
 };
