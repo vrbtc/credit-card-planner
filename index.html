@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>卡神日历 · 刷卡规划</title>
+<title>现金流日历 · 刷卡规划</title>
 <style>
 :root {
   --bg: #0a0f1a;
@@ -31,8 +31,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 .container { max-width: 980px; margin: 0 auto; padding: 20px 12px 56px; }
-
-/* header */
 .header { text-align: center; margin-bottom: 18px; }
 .header h1 {
   font-size: 26px; font-weight: 800;
@@ -41,18 +39,24 @@ body {
 }
 .header .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
 .header .meta { color: #64748b; font-size: 12px; margin-top: 4px; }
+.bill-status {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+  padding: 4px 10px; border-radius: 999px; font-size: 11px;
+  background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.22); color: #93c5fd;
+}
+.bill-status.warn { background: rgba(251,146,60,.1); border-color: rgba(251,146,60,.3); color: var(--orange); }
+.bill-status.ok { color: var(--green); border-color: rgba(74,222,128,.3); background: rgba(74,222,128,.08); }
 
-/* hero recommend */
 .hero {
   background: linear-gradient(145deg, #15233f, #1a1633);
-  border: 1px solid var(--border); border-radius: 16px; padding: 18px 18px 16px;
+  border: 1px solid var(--border); border-radius: 16px; padding: 18px;
   margin-bottom: 18px; position: relative; overflow: hidden;
 }
 .hero::before {
   content: ""; position: absolute; inset: -50% auto auto -10%; width: 240px; height: 240px;
   background: radial-gradient(circle, rgba(74,222,128,.16), transparent 70%); pointer-events: none;
 }
-.hero-label { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.hero-label { font-size: 12px; color: var(--muted); }
 .hero-name { font-size: 28px; font-weight: 800; margin-top: 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
 .hero-stat { background: rgba(0,0,0,.2); border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,.04); }
@@ -71,7 +75,20 @@ body {
 }
 .rank-chip .n { color: var(--muted); font-size: 11px; min-width: 14px; text-align: center; }
 
-/* bank icon */
+.cash-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px;
+}
+.stat-card {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+}
+.stat-card .k { font-size: 11px; color: var(--muted); }
+.stat-card .v { font-size: 18px; font-weight: 800; margin-top: 2px; }
+.stat-card .v.orange { color: var(--orange); }
+.stat-card .v.purple { color: var(--purple); }
+.stat-card .v.blue { color: var(--blue); }
+.stat-card .v.green { color: var(--green); }
+.stat-card .s { font-size: 11px; color: #64748b; margin-top: 2px; }
+
 .bank-ico {
   display: inline-flex; align-items: center; justify-content: center;
   width: 22px; height: 22px; border-radius: 6px; font-size: 11px; font-weight: 800;
@@ -80,7 +97,6 @@ body {
 .bank-ico.lg { width: 36px; height: 36px; border-radius: 10px; font-size: 16px; }
 .bank-ico.sm { width: 16px; height: 16px; border-radius: 4px; font-size: 9px; }
 
-/* sections */
 .section { margin-bottom: 22px; }
 .section-title {
   font-size: 16px; font-weight: 700; margin-bottom: 10px;
@@ -89,7 +105,6 @@ body {
 .section-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
 .section-title .hint { margin-left: auto; font-size: 11px; color: var(--muted); font-weight: 500; }
 
-/* legend */
 .legend-bar {
   display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
   font-size: 12px; color: var(--muted); margin-bottom: 10px;
@@ -99,7 +114,6 @@ body {
 .dot-due { width: 8px; height: 8px; border-radius: 50%; background: var(--due); }
 .dot-loan { width: 8px; height: 8px; border-radius: 50%; background: var(--loan); }
 
-/* calendar */
 .cal-shell {
   background: var(--panel); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
   touch-action: pan-y;
@@ -113,7 +127,6 @@ body {
   color: var(--blue); border-radius: 10px; width: 40px; height: 36px;
   font-size: 18px; cursor: pointer; line-height: 1;
 }
-.cal-nav button:active { transform: scale(.96); }
 .cal-nav .title { font-size: 17px; font-weight: 750; text-align: center; }
 .cal-nav .title small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
 .cal-week {
@@ -122,12 +135,11 @@ body {
 }
 .cal-grid {
   display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
-  padding: 6px; min-height: 320px;
-  user-select: none;
+  padding: 6px; min-height: 340px; user-select: none;
 }
 .cal-cell {
-  min-height: 72px; border-radius: 10px; background: rgba(255,255,255,.02);
-  border: 1px solid transparent; padding: 4px 3px 6px; cursor: pointer;
+  min-height: 78px; border-radius: 10px; background: rgba(255,255,255,.02);
+  border: 1px solid transparent; padding: 3px 2px 5px; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; transition: background .15s, border-color .15s;
 }
 .cal-cell:hover { background: rgba(255,255,255,.04); }
@@ -135,23 +147,25 @@ body {
 .cal-cell.today { border-color: rgba(96,165,250,.55); background: rgba(96,165,250,.08); }
 .cal-cell.has-event { border-color: rgba(42,54,80,.9); }
 .cal-cell.selected { border-color: var(--purple); box-shadow: 0 0 0 1px rgba(167,139,250,.35); }
-.cal-daynum { font-size: 13px; font-weight: 700; margin: 2px 0 3px; }
+.cal-daynum { font-size: 13px; font-weight: 700; margin: 1px 0 2px; }
 .cal-top, .cal-bot {
   display: flex; flex-wrap: wrap; justify-content: center; gap: 2px;
-  min-height: 18px; max-height: 36px; overflow: hidden; width: 100%;
+  min-height: 16px; max-height: 34px; overflow: hidden; width: 100%;
 }
-.cal-top { margin-bottom: 2px; }
-.cal-bot { margin-top: auto; }
+.cal-amt {
+  font-size: 9px; font-weight: 700; color: var(--orange); line-height: 1.1;
+  margin-top: 1px; font-variant-numeric: tabular-nums; max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.cal-amt.loan { color: var(--loan); }
 .cal-loan-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--loan);
-  margin: 1px auto 0;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--loan); margin: 1px auto 0;
 }
 
-/* free period table */
 .table-wrap {
   background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: auto;
 }
-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 680px; }
 th {
   text-align: left; padding: 10px 12px; color: var(--muted); font-weight: 600;
   background: var(--panel2); border-bottom: 1px solid var(--border); font-size: 11px; white-space: nowrap;
@@ -169,21 +183,8 @@ tr.best { background: rgba(74,222,128,.07); }
 .pill.mid { background: rgba(250,204,21,.12); color: var(--yellow); }
 .pill.short { background: rgba(248,113,113,.14); color: var(--red); }
 .pill.tag { background: rgba(96,165,250,.18); color: var(--blue); margin-left: 6px; font-size: 11px; }
+.pill.est { background: rgba(192,132,252,.15); color: var(--loan); font-size: 10px; font-weight: 600; margin-left: 4px; }
 
-/* loans */
-.loan-summary {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px;
-}
-.stat-card {
-  background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
-}
-.stat-card .k { font-size: 11px; color: var(--muted); }
-.stat-card .v { font-size: 20px; font-weight: 800; margin-top: 2px; }
-.stat-card .v.orange { color: var(--orange); }
-.stat-card .v.purple { color: var(--purple); }
-.stat-card .v.blue { color: var(--blue); }
-
-/* modal */
 .modal-mask {
   position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 50;
   display: none; align-items: flex-end; justify-content: center; padding: 16px;
@@ -201,8 +202,8 @@ tr.best { background: rgba(74,222,128,.07); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .modal-head h3 { font-size: 17px; }
 .modal-close {
-  background: transparent; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1;
-  width: 32px; height: 32px;
+  background: transparent; border: none; color: var(--muted); font-size: 22px; cursor: pointer;
+  width: 32px; height: 32px; line-height: 1;
 }
 .modal-block { margin-bottom: 14px; }
 .modal-block h4 {
@@ -215,7 +216,12 @@ tr.best { background: rgba(74,222,128,.07); }
 .modal-item .info { flex: 1; min-width: 0; }
 .modal-item .title { font-size: 14px; font-weight: 650; }
 .modal-item .desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.modal-empty { text-align: center; color: var(--muted); padding: 20px; font-size: 13px; }
+.modal-item .amt { font-size: 14px; font-weight: 750; color: var(--orange); white-space: nowrap; }
+.modal-empty { text-align: center; color: var(--muted); padding: 16px; font-size: 13px; }
+.day-total {
+  background: rgba(251,146,60,.08); border: 1px solid rgba(251,146,60,.25);
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 13px;
+}
 
 .help {
   margin-top: 8px; padding: 14px; background: var(--panel); border: 1px solid var(--border);
@@ -232,8 +238,7 @@ tr.best { background: rgba(74,222,128,.07); }
 @media (max-width: 640px) {
   .hero-stats { grid-template-columns: 1fr 1fr; }
   .hero-name { font-size: 22px; }
-  .cal-cell { min-height: 64px; padding: 3px 1px 4px; }
-  .cal-daynum { font-size: 12px; }
+  .cal-cell { min-height: 70px; }
   .bank-ico.sm { width: 14px; height: 14px; font-size: 8px; border-radius: 3px; }
 }
 @media (min-width: 720px) {
@@ -244,28 +249,29 @@ tr.best { background: rgba(74,222,128,.07); }
 <body>
 <div class="container">
   <header class="header">
-    <h1>💳 卡神日历 · 刷卡规划</h1>
-    <div class="sub">最长免息 · 出账/还款日历 · 固定债务 — 独立页，不影响账单仪表盘</div>
+    <h1>💰 现金流日历 · 刷卡规划</h1>
+    <div class="sub">真实账单金额 · 最长免息 · 出账/还款日历 · 固定债务估算</div>
     <div class="meta" id="metaLine"></div>
+    <div class="bill-status" id="billStatus">账单金额加载中…</div>
   </header>
 
-  <!-- 今天刷哪张 -->
+  <div class="cash-row" id="cashSummary"></div>
+
   <section class="hero" id="hero">
     <div class="hero-label">⭐ 今天刷哪张最划算（当前最长免息）</div>
     <div id="heroBody"></div>
   </section>
 
-  <!-- 日历 -->
   <section class="section">
     <div class="section-title">
-      <span class="dot"></span>日历视图管卡
-      <span class="hint">上方=出账日 · 下方=还款日 · 左右滑切换月份</span>
+      <span class="dot"></span>日历视图
+      <span class="hint">上=出账 · 下=还款+金额 · 左右滑切换</span>
     </div>
     <div class="legend-bar">
-      <span class="item"><span class="dot-stmt"></span>出账日（账单日）</span>
-      <span class="item"><span class="dot-due"></span>信用卡还款日</span>
-      <span class="item"><span class="dot-loan"></span>固定债务还款</span>
-      <span class="item">点击日期查看详情</span>
+      <span class="item"><span class="dot-stmt"></span>出账日</span>
+      <span class="item"><span class="dot-due"></span>信用卡还款（含真实金额）</span>
+      <span class="item"><span class="dot-loan"></span>固定债务月供</span>
+      <span class="item">点日期看详情</span>
     </div>
     <div class="cal-shell" id="calShell">
       <div class="cal-nav">
@@ -280,10 +286,9 @@ tr.best { background: rgba(74,222,128,.07); }
     </div>
   </section>
 
-  <!-- 免息期列表 -->
   <section class="section">
     <div class="section-title">
-      <span class="dot" style="background:var(--green)"></span>各卡免息期（按今日刷卡排序）
+      <span class="dot" style="background:var(--green)"></span>各卡免息期 & 待还金额
       <span class="hint" id="cardCount"></span>
     </div>
     <div class="table-wrap">
@@ -293,9 +298,9 @@ tr.best { background: rgba(74,222,128,.07); }
             <th>卡片</th>
             <th>出账日</th>
             <th>还款日</th>
+            <th>待还金额</th>
+            <th>账单还款日</th>
             <th>今日免息</th>
-            <th>计入账单日</th>
-            <th>对应还款日</th>
             <th>理论最长</th>
           </tr>
         </thead>
@@ -304,23 +309,23 @@ tr.best { background: rgba(74,222,128,.07); }
     </div>
   </section>
 
-  <!-- 固定债务 -->
   <section class="section">
     <div class="section-title">
       <span class="dot" style="background:var(--loan)"></span>长期贷款 / 固定月供
       <span class="hint" id="loanAsOf"></span>
     </div>
-    <div class="loan-summary" id="loanSummary"></div>
+    <div class="cash-row" id="loanSummary"></div>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th>类别</th>
             <th>银行</th>
-            <th>月还款</th>
+            <th>月还款（固定）</th>
             <th>还款日</th>
             <th>总借款</th>
-            <th>剩余本金</th>
+            <th>快照剩余</th>
+            <th>估算今日剩余</th>
           </tr>
         </thead>
         <tbody id="loanTable"></tbody>
@@ -329,22 +334,20 @@ tr.best { background: rgba(74,222,128,.07); }
   </section>
 
   <div class="help">
-    <h3>规则（参考卡神日历 / 行业通用）</h3>
+    <h3>数据说明</h3>
     <ul>
-      <li><strong>出账日当天及之后</strong>消费 → 计入<strong>下期</strong>账单；出账日前消费 → 计入<strong>本期</strong>。</li>
-      <li><strong>今日免息天数</strong> = 今天 → 该笔消费所属账单的还款日（天数越多越划算）。</li>
-      <li><strong>理论最长免息</strong> ≈ 出账日当天刷卡（计入下期）到对应还款日的跨度。</li>
-      <li>还款日数字 &gt; 出账日 → 还款多在账单<strong>当月</strong>；否则在账单月的<strong>下一月</strong>。</li>
-      <li>日历：格子<strong>上方</strong>银行角标=出账日，<strong>下方</strong>=信用卡还款日；紫点=固定债务。</li>
+      <li><strong>信用卡金额</strong>：来自原项目「银行账单仪表盘」邮箱提取结果（优先在线拉取 <code>bank-bill-extractor/data.json</code>，失败则用本地快照 <code>bills.json</code>）。</li>
+      <li><strong>月供金额</strong>：按你配置的固定月还款，一般不变（除非银行调额/提前结清）。</li>
+      <li><strong>剩余本金</strong>：不是银行实时接口。<code>principal_left</code> 是 <code>principal_as_of</code> 日的快照；页面从该日起按每期还款<strong>估算递减</strong>（等额本息用利率模拟本金、分期卡按月扣减）。标有「估算」的数字请以银行 APP 为准，定期回填快照更准。</li>
+      <li>出账日当天及之后消费计入下期；今日免息 = 今天到对应还款日的天数。</li>
     </ul>
   </div>
 
   <footer class="footer">
-    卡神日历风格 · 独立 GitHub Pages · 与银行账单仪表盘互不影响 · 仅供参考
+    现金流日历 · 刷卡规划 · 独立 GitHub Pages · 与账单仪表盘分离 · 金额仅供参考
   </footer>
 </div>
 
-<!-- 日期详情 -->
 <div class="modal-mask" id="modalMask" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -362,19 +365,34 @@ tr.best { background: rgba(74,222,128,.07); }
   const cards = (DATA.cards || []).filter(function (c) { return c.enabled !== false; });
   const loans = (DATA.loans || []).filter(function (l) { return l.enabled !== false; });
 
+  /** @type {{bank:string,amount:number,due_date:string}[]} */
+  let billList = [];
+  let billMeta = { source: "", generated_at: "", ok: false };
+
   function dateOn(y, m, day) {
     const last = new Date(y, m + 1, 0).getDate();
     return new Date(y, m, Math.min(Math.max(1, day), last));
   }
   function sod(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-  function daysBetween(a, b) {
-    return Math.round((sod(b) - sod(a)) / 86400000);
-  }
+  function daysBetween(a, b) { return Math.round((sod(b) - sod(a)) / 86400000); }
   function fmtDate(d) {
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
+  function parseYMD(s) {
+    if (!s) return null;
+    const p = String(s).replace(/\//g, "-").slice(0, 10).split("-");
+    if (p.length < 3) return null;
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
   function fmtMoney(n) {
-    return "¥" + Number(n || 0).toLocaleString("zh-CN", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    return "¥" + Number(n || 0).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtShort(n) {
+    n = Number(n || 0);
+    if (n >= 10000) return (n / 10000).toFixed(n >= 100000 ? 1 : 2).replace(/\.0$/, "") + "万";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+    if (n <= 0) return "";
+    return String(Math.round(n));
   }
   function esc(s) {
     return String(s == null ? "" : s)
@@ -388,40 +406,61 @@ tr.best { background: rgba(74,222,128,.07); }
   function icoLoan(loan) {
     return '<span class="bank-ico sm" style="background:#7c3aed" title="' + esc(loan.category) + '">债</span>';
   }
+  function icoGeneric(name, color) {
+    const short = (name || "?").replace(/银行|信用卡|\s|\(.*\)/g, "").charAt(0) || "?";
+    return '<span class="bank-ico sm" style="background:' + esc(color || "#475569") + '">' + esc(short) + "</span>";
+  }
 
-  /**
-   * 计算：asOf 日刷卡的免息信息
-   * 出账日当天计入下期（与广发等银行说明一致：账单日后刷卡免息最长）
-   */
-  function calcCard(card, asOf) {
-    const y = asOf.getFullYear(), m = asOf.getMonth(), day = asOf.getDate();
-    const S = card.statement_day, D = card.due_day;
+  function bankMatch(billBank, cardName) {
+    if (!billBank || !cardName) return false;
+    const a = billBank.replace(/\s/g, "");
+    const b = cardName.replace(/\s/g, "");
+    return a.indexOf(b) >= 0 || b.indexOf(a) >= 0 ||
+      a.indexOf(b.slice(0, 2)) >= 0 || b.indexOf(a.slice(0, 2)) >= 0;
+  }
 
-    var statementDate;
-    if (day >= S) statementDate = dateOn(y, m + 1, S);
-    else statementDate = dateOn(y, m, S);
-
-    var dueDate;
-    if (D > S) dueDate = dateOn(statementDate.getFullYear(), statementDate.getMonth(), D);
-    else dueDate = dateOn(statementDate.getFullYear(), statementDate.getMonth() + 1, D);
-
-    const freeDays = daysBetween(asOf, dueDate);
-
-    // 理论最长：出账日当天刷（计入下期）
-    var prevStmt;
-    if (day >= S) prevStmt = dateOn(y, m, S);
-    else prevStmt = dateOn(y, m - 1, S);
-    const maxAsOf = dateOn(prevStmt.getFullYear(), prevStmt.getMonth(), S);
-    const maxInfo = calcCardCore(card, maxAsOf);
-
+  /** 某卡最近一期（未过期优先）账单 */
+  function billsForCard(card) {
+    return billList.filter(function (b) { return bankMatch(b.bank, card.name); });
+  }
+  function latestBillForCard(card) {
+    const list = billsForCard(card).slice().sort(function (a, b) {
+      return (b.due_date || "").localeCompare(a.due_date || "");
+    });
+    // 优先未过期
+    const upcoming = list.filter(function (b) {
+      const d = parseYMD(b.due_date);
+      return d && sod(d) >= today;
+    });
+    if (upcoming.length) {
+      upcoming.sort(function (a, b) { return (a.due_date || "").localeCompare(b.due_date || ""); });
+      // 同一还款日多笔合并
+      const due = upcoming[0].due_date;
+      const same = upcoming.filter(function (x) { return x.due_date === due; });
+      const amount = same.reduce(function (s, x) { return s + Number(x.amount || 0); }, 0);
+      return { bank: card.name, amount: amount, due_date: due, merged: same.length };
+    }
+    if (!list.length) return null;
+    const due = list[0].due_date;
+    const same = list.filter(function (x) { return x.due_date === due; });
     return {
-      freeDays: freeDays,
-      statementDate: statementDate,
-      dueDate: dueDate,
-      maxFreeDays: maxInfo.freeDays
+      bank: card.name,
+      amount: same.reduce(function (s, x) { return s + Number(x.amount || 0); }, 0),
+      due_date: due,
+      past: true
     };
   }
 
+  function billsOnDate(y, m, d) {
+    const key = fmtDate(dateOn(y, m, d));
+    return billList.filter(function (b) { return b.due_date === key; });
+  }
+
+  function dayBillTotal(y, m, d) {
+    return billsOnDate(y, m, d).reduce(function (s, b) { return s + Number(b.amount || 0); }, 0);
+  }
+
+  // ---- 免息 ----
   function calcCardCore(card, asOf) {
     const y = asOf.getFullYear(), m = asOf.getMonth(), day = asOf.getDate();
     const S = card.statement_day, D = card.due_day;
@@ -431,35 +470,134 @@ tr.best { background: rgba(74,222,128,.07); }
       : dateOn(statementDate.getFullYear(), statementDate.getMonth() + 1, D);
     return { freeDays: daysBetween(asOf, dueDate), statementDate: statementDate, dueDate: dueDate };
   }
-
+  function calcCard(card, asOf) {
+    const core = calcCardCore(card, asOf);
+    const y = asOf.getFullYear(), m = asOf.getMonth(), day = asOf.getDate();
+    const S = card.statement_day;
+    var prevStmt = day >= S ? dateOn(y, m, S) : dateOn(y, m - 1, S);
+    const maxAsOf = dateOn(prevStmt.getFullYear(), prevStmt.getMonth(), S);
+    return {
+      freeDays: core.freeDays,
+      statementDate: core.statementDate,
+      dueDate: core.dueDate,
+      maxFreeDays: calcCardCore(card, maxAsOf).freeDays
+    };
+  }
   function freePill(days) {
     if (days >= 40) return '<span class="pill long">' + days + " 天</span>";
     if (days >= 20) return '<span class="pill mid">' + days + " 天</span>";
     return '<span class="pill short">' + days + " 天</span>";
   }
 
+  // ---- 贷款剩余本金估算 ----
+  function parseAsOf() {
+    return parseYMD(DATA.principal_as_of) || today;
+  }
+  function countPaymentsPassed(asOf, until, dueDay) {
+    // 还款日 in (asOf, until]
+    let n = 0;
+    let y = asOf.getFullYear(), m = asOf.getMonth();
+    // 最多扫 600 期
+    for (let i = 0; i < 600; i++) {
+      const due = dateOn(y, m, dueDay);
+      if (due > until) break;
+      if (due > asOf) n++;
+      m++;
+      if (m > 11) { m = 0; y++; }
+    }
+    return n;
+  }
+  function estimatePrincipalLeft(loan, untilDate) {
+    const base = Number(loan.principal_left || 0);
+    const asOf = parseAsOf();
+    const until = sod(untilDate || today);
+    if (until <= asOf) return { left: base, payments: 0, estimated: false };
+
+    const monthly = Number(loan.monthly || 0);
+    const type = loan.amortize || "epi";
+    let P = base;
+    let payments = 0;
+
+    if (type === "installment") {
+      const step = loan.principal_portion != null ? Number(loan.principal_portion) : monthly;
+      payments = countPaymentsPassed(asOf, until, loan.due_day);
+      P = Math.max(0, base - payments * step);
+      return { left: P, payments: payments, estimated: payments > 0 };
+    }
+
+    // 等额本息：按期用利率拆分利息/本金
+    const rMonth = Number(loan.rate_annual != null ? loan.rate_annual : 0.05) / 12;
+    let y = asOf.getFullYear(), m = asOf.getMonth();
+    for (let i = 0; i < 600; i++) {
+      const due = dateOn(y, m, loan.due_day);
+      if (due > until) break;
+      if (due > asOf) {
+        const interest = P * rMonth;
+        let principalPay = monthly - interest;
+        if (principalPay < 0) principalPay = 0;
+        if (principalPay > P) principalPay = P;
+        P -= principalPay;
+        payments++;
+        if (P <= 0.5) { P = 0; break; }
+      }
+      m++;
+      if (m > 11) { m = 0; y++; }
+    }
+    return { left: Math.max(0, P), payments: payments, estimated: payments > 0 };
+  }
+
   const today = sod(new Date());
   let viewY = today.getFullYear();
-  let viewM = today.getMonth(); // 0-11
+  let viewM = today.getMonth();
   let selectedKey = null;
 
-  // ---- meta & hero ----
-  document.getElementById("metaLine").textContent =
-    "今天 " + fmtDate(today) + " · 配置 " + (DATA.updated_at || "—") +
-    " · " + cards.length + " 张卡 / " + loans.length + " 笔固定债务";
+  // ---- render pieces ----
+  function renderCashSummary() {
+    const cardPending = cards.reduce(function (s, c) {
+      const b = latestBillForCard(c);
+      if (b && !b.past) return s + b.amount;
+      return s;
+    }, 0);
+    // 孤儿账单（如长安）也算入
+    const orphan = billList.filter(function (b) {
+      const d = parseYMD(b.due_date);
+      if (!d || sod(d) < today) return false;
+      return !cards.some(function (c) { return bankMatch(b.bank, c.name); });
+    }).reduce(function (s, b) { return s + Number(b.amount || 0); }, 0);
 
-  const rows = cards.map(function (card) {
-    return { card: card, info: calcCard(card, today) };
-  }).sort(function (a, b) { return b.info.freeDays - a.info.freeDays; });
+    const loanMonth = loans.reduce(function (s, l) { return s + Number(l.monthly || 0); }, 0);
+    const loanLeft = loans.reduce(function (s, l) { return s + estimatePrincipalLeft(l, today).left; }, 0);
 
-  (function renderHero() {
+    // 本月视图内信用卡应还 + 固定债务
+    const dim = new Date(viewY, viewM + 1, 0).getDate();
+    let monthCard = 0;
+    for (let d = 1; d <= dim; d++) monthCard += dayBillTotal(viewY, viewM, d);
+    const monthLoan = loanMonth; // 固定债务每月都有
+
+    document.getElementById("cashSummary").innerHTML =
+      '<div class="stat-card"><div class="k">信用卡待还（未到期）</div><div class="v orange">' + fmtMoney(cardPending + orphan) + '</div>' +
+        '<div class="s">邮箱账单提取</div></div>' +
+      '<div class="stat-card"><div class="k">固定债务月供</div><div class="v purple">' + fmtMoney(loanMonth) + '</div>' +
+        '<div class="s">' + loans.length + ' 笔 · 金额固定</div></div>' +
+      '<div class="stat-card"><div class="k">估算剩余本金</div><div class="v blue">' + fmtMoney(loanLeft) + '</div>' +
+        '<div class="s">自 ' + (DATA.principal_as_of || "—") + ' 递减估算</div></div>' +
+      '<div class="stat-card"><div class="k">当月日历信用卡金额</div><div class="v green">' + fmtMoney(monthCard) + '</div>' +
+        '<div class="s">' + viewY + "-" + String(viewM + 1).padStart(2, "0") + " 视图</div></div>";
+  }
+
+  function renderHero() {
+    const rows = cards.map(function (card) {
+      return { card: card, info: calcCard(card, today) };
+    }).sort(function (a, b) { return b.info.freeDays - a.info.freeDays; });
+
     const el = document.getElementById("heroBody");
     if (!rows.length) {
-      el.innerHTML = '<div style="color:var(--muted);padding:8px 0">暂无卡片数据</div>';
-      return;
+      el.innerHTML = '<div style="color:var(--muted)">暂无卡片</div>';
+      return rows;
     }
     const best = rows[0];
     const warn = best.info.freeDays < 20;
+    const bill = latestBillForCard(best.card);
     const rank = rows.slice(0, 6).map(function (r, i) {
       return '<span class="rank-chip"><span class="n">' + (i + 1) + "</span>" +
         ico(r.card, "md") + " " + esc(r.card.short || r.card.name) +
@@ -473,75 +611,105 @@ tr.best { background: rgba(74,222,128,.07); }
         '<div class="hero-stat"><div class="k">今日免息约</div><div class="v' + (warn ? " warn" : "") + '">' + best.info.freeDays + " 天</div></div>" +
         '<div class="hero-stat"><div class="k">计入账单日</div><div class="v blue">' + fmtDate(best.info.statementDate) + "</div></div>" +
         '<div class="hero-stat"><div class="k">对应还款日</div><div class="v purple">' + fmtDate(best.info.dueDate) + "</div></div>" +
-        '<div class="hero-stat"><div class="k">理论最长免息</div><div class="v yellow">' + best.info.maxFreeDays + " 天</div></div>" +
+        '<div class="hero-stat"><div class="k">该卡待还</div><div class="v yellow">' +
+          (bill ? fmtMoney(bill.amount) : "暂无账单") + "</div></div>" +
       "</div>" +
-      '<div class="hero-reason">空当接龙思路：今天消费选免息最长的卡，资金占用时间最久。' +
+      '<div class="hero-reason">选免息最长的卡刷，拉长资金占用。' +
         (rows[1] ? " 次优 " + esc(rows[1].card.name) + "（" + rows[1].info.freeDays + " 天）。" : "") +
       "</div>" +
       '<div class="rank-row">' + rank + "</div>";
-  })();
+    return rows;
+  }
 
-  // ---- card table ----
-  document.getElementById("cardCount").textContent = cards.length + " 张";
-  document.getElementById("cardTable").innerHTML = rows.map(function (r, idx) {
-    const c = r.card, i = r.info;
-    return '<tr class="' + (idx === 0 ? "best" : "") + '">' +
-      '<td class="name-cell"><div style="display:flex;align-items:center;gap:8px">' + ico(c, "md") +
-        "<div>" + esc(c.name) + (idx === 0 ? '<span class="pill tag">推荐</span>' : "") +
-        '<div class="sub">尾号 ' + esc(c.last4 || "—") + "</div></div></div></td>" +
-      '<td class="num">每月 ' + c.statement_day + " 日</td>" +
-      '<td class="num">每月 ' + c.due_day + " 日</td>" +
-      "<td>" + freePill(i.freeDays) + "</td>" +
-      '<td class="num">' + fmtDate(i.statementDate) + "</td>" +
-      '<td class="num">' + fmtDate(i.dueDate) + "</td>" +
-      '<td class="num">' + i.maxFreeDays + " 天</td></tr>";
-  }).join("");
+  function renderCardTable(rows) {
+    document.getElementById("cardCount").textContent = cards.length + " 张";
+    document.getElementById("cardTable").innerHTML = rows.map(function (r, idx) {
+      const c = r.card, i = r.info;
+      const bill = latestBillForCard(c);
+      const amtHtml = bill
+        ? '<span style="color:var(--orange);font-weight:700">' + fmtMoney(bill.amount) + "</span>" +
+          (bill.past ? '<div class="sub">已过期账单</div>' : "")
+        : '<span style="color:var(--muted)">—</span>';
+      const dueHtml = bill && bill.due_date
+        ? bill.due_date
+        : "每月 " + c.due_day + " 日";
+      return '<tr class="' + (idx === 0 ? "best" : "") + '">' +
+        '<td class="name-cell"><div style="display:flex;align-items:center;gap:8px">' + ico(c, "md") +
+          "<div>" + esc(c.name) + (idx === 0 ? '<span class="pill tag">推荐</span>' : "") +
+          '<div class="sub">尾号 ' + esc(c.last4 || "—") + "</div></div></div></td>" +
+        '<td class="num">每月 ' + c.statement_day + " 日</td>" +
+        '<td class="num">每月 ' + c.due_day + " 日</td>" +
+        '<td class="num">' + amtHtml + "</td>" +
+        '<td class="num">' + dueHtml + "</td>" +
+        "<td>" + freePill(i.freeDays) + "</td>" +
+        '<td class="num">' + i.maxFreeDays + " 天</td></tr>";
+    }).join("");
+  }
 
-  // ---- loans ----
-  document.getElementById("loanAsOf").textContent =
-    "剩余本金更新：" + (DATA.principal_as_of || "—");
+  function renderLoans() {
+    document.getElementById("loanAsOf").textContent =
+      "快照 " + (DATA.principal_as_of || "—") + " · 月供固定 · 剩余为本金估算";
 
-  const monthlyTotal = loans.reduce(function (s, l) { return s + Number(l.monthly || 0); }, 0);
-  const leftTotal = loans.reduce(function (s, l) { return s + Number(l.principal_left || 0); }, 0);
-  const principalTotal = loans.reduce(function (s, l) { return s + Number(l.principal_total || 0); }, 0);
+    const monthlyTotal = loans.reduce(function (s, l) { return s + Number(l.monthly || 0); }, 0);
+    const snapTotal = loans.reduce(function (s, l) { return s + Number(l.principal_left || 0); }, 0);
+    const estTotal = loans.reduce(function (s, l) { return s + estimatePrincipalLeft(l, today).left; }, 0);
+    const principalTotal = loans.reduce(function (s, l) { return s + Number(l.principal_total || 0); }, 0);
 
-  document.getElementById("loanSummary").innerHTML =
-    '<div class="stat-card"><div class="k">每月固定合计</div><div class="v orange">' + fmtMoney(monthlyTotal) + "</div></div>" +
-    '<div class="stat-card"><div class="k">剩余本金合计</div><div class="v purple">' + fmtMoney(leftTotal) + "</div></div>" +
-    '<div class="stat-card"><div class="k">总借款合计</div><div class="v blue">' + fmtMoney(principalTotal) + "</div></div>" +
-    '<div class="stat-card"><div class="k">固定债务笔数</div><div class="v">' + loans.length + "</div></div>";
+    document.getElementById("loanSummary").innerHTML =
+      '<div class="stat-card"><div class="k">每月固定合计</div><div class="v orange">' + fmtMoney(monthlyTotal) + "</div>" +
+        '<div class="s">一般不随时间自动变</div></div>' +
+      '<div class="stat-card"><div class="k">快照剩余本金</div><div class="v purple">' + fmtMoney(snapTotal) + "</div>" +
+        '<div class="s">' + (DATA.principal_as_of || "—") + "</div></div>" +
+      '<div class="stat-card"><div class="k">估算今日剩余</div><div class="v blue">' + fmtMoney(estTotal) + "</div>" +
+        '<div class="s">按期递减（非银行实时）</div></div>' +
+      '<div class="stat-card"><div class="k">总借款</div><div class="v">' + fmtMoney(principalTotal) + "</div></div>";
 
-  const loanSorted = loans.slice().sort(function (a, b) { return a.due_day - b.due_day; });
-  document.getElementById("loanTable").innerHTML = loanSorted.map(function (l) {
-    return "<tr><td class='name-cell'>" + esc(l.category) + "</td>" +
-      "<td>" + esc(l.bank) + "</td>" +
-      '<td class="num" style="color:var(--orange)">' + fmtMoney(l.monthly) + "</td>" +
-      '<td class="num">每月 ' + l.due_day + " 日</td>" +
-      '<td class="num">' + fmtMoney(l.principal_total) + "</td>" +
-      '<td class="num" style="color:var(--purple)">' + fmtMoney(l.principal_left) + "</td></tr>";
-  }).join("") +
-    "<tr><td colspan='2' style='text-align:right;color:var(--muted)'>合计</td>" +
-    '<td class="num" style="color:var(--orange);font-weight:800">' + fmtMoney(monthlyTotal) + "</td>" +
-    "<td></td><td class='num'>" + fmtMoney(principalTotal) + "</td>" +
-    '<td class="num" style="color:var(--purple);font-weight:800">' + fmtMoney(leftTotal) + "</td></tr>";
+    const loanSorted = loans.slice().sort(function (a, b) { return a.due_day - b.due_day; });
+    document.getElementById("loanTable").innerHTML = loanSorted.map(function (l) {
+      const est = estimatePrincipalLeft(l, today);
+      const reduced = Number(l.principal_left || 0) - est.left;
+      return "<tr><td class='name-cell'>" + esc(l.category) +
+        (est.estimated ? '<span class="pill est">估算</span>' : "") + "</td>" +
+        "<td>" + esc(l.bank) + "</td>" +
+        '<td class="num" style="color:var(--orange)">' + fmtMoney(l.monthly) +
+          '<div class="sub">固定月供</div></td>' +
+        '<td class="num">每月 ' + l.due_day + " 日</td>" +
+        '<td class="num">' + fmtMoney(l.principal_total) + "</td>" +
+        '<td class="num">' + fmtMoney(l.principal_left) + "</td>" +
+        '<td class="num" style="color:var(--purple);font-weight:700">' + fmtMoney(est.left) +
+          (est.payments ? '<div class="sub">已过 ' + est.payments + " 期 · 约减 " + fmtMoney(reduced) + "</div>" : "") +
+        "</td></tr>";
+    }).join("") +
+      "<tr><td colspan='2' style='text-align:right;color:var(--muted)'>合计</td>" +
+      '<td class="num" style="color:var(--orange);font-weight:800">' + fmtMoney(monthlyTotal) + "</td>" +
+      "<td></td><td class='num'>" + fmtMoney(principalTotal) + "</td>" +
+      '<td class="num">' + fmtMoney(snapTotal) + "</td>" +
+      '<td class="num" style="color:var(--purple);font-weight:800">' + fmtMoney(estTotal) + "</td></tr>";
+  }
 
-  // ---- calendar helpers ----
   function eventsForMonth(y, m) {
-    // map day -> { statements:[], dues:[], loans:[] }
     const map = {};
     function bucket(day) {
-      if (!map[day]) map[day] = { statements: [], dues: [], loans: [] };
+      if (!map[day]) map[day] = { statements: [], dues: [], loans: [], billAmount: 0, loanAmount: 0 };
       return map[day];
     }
     const dim = new Date(y, m + 1, 0).getDate();
     cards.forEach(function (c) {
-      const sd = Math.min(c.statement_day, dim);
-      const dd = Math.min(c.due_day, dim);
-      bucket(sd).statements.push(c);
-      bucket(dd).dues.push(c);
+      bucket(Math.min(c.statement_day, dim)).statements.push(c);
+      bucket(Math.min(c.due_day, dim)).dues.push(c);
     });
     loans.forEach(function (l) {
-      bucket(Math.min(l.due_day, dim)).loans.push(l);
+      const day = Math.min(l.due_day, dim);
+      const b = bucket(day);
+      b.loans.push(l);
+      b.loanAmount += Number(l.monthly || 0);
+    });
+    // 账单金额按具体 due_date
+    billList.forEach(function (b) {
+      const d = parseYMD(b.due_date);
+      if (!d || d.getFullYear() !== y || d.getMonth() !== m) return;
+      const day = d.getDate();
+      bucket(day).billAmount += Number(b.amount || 0);
     });
     return map;
   }
@@ -549,50 +717,51 @@ tr.best { background: rgba(74,222,128,.07); }
   function renderCalendar() {
     const y = viewY, m = viewM;
     const dim = new Date(y, m + 1, 0).getDate();
-    const firstDow = new Date(y, m, 1).getDay(); // 0 Sun
+    const firstDow = new Date(y, m, 1).getDay();
     const events = eventsForMonth(y, m);
     const prevDim = new Date(y, m, 0).getDate();
 
+    let monthBill = 0, monthLoan = 0;
+    Object.keys(events).forEach(function (k) {
+      monthBill += events[k].billAmount || 0;
+      monthLoan += events[k].loanAmount || 0;
+    });
+
     document.getElementById("calTitle").innerHTML =
       y + " 年 " + (m + 1) + " 月" +
-      "<small>左右滑动或点按钮切换 · 共 " +
-      Object.keys(events).length + " 个有事项的日子</small>";
+      "<small>信用卡账单 " + fmtMoney(monthBill) + " · 固定债务 " + fmtMoney(monthLoan) +
+      " · 合计 " + fmtMoney(monthBill + monthLoan) + "</small>";
 
     const cells = [];
-    // leading
     for (let i = 0; i < firstDow; i++) {
       const d = prevDim - firstDow + 1 + i;
       cells.push({ day: d, other: true, y: m === 0 ? y - 1 : y, m: m === 0 ? 11 : m - 1 });
     }
-    for (let d = 1; d <= dim; d++) {
-      cells.push({ day: d, other: false, y: y, m: m });
-    }
+    for (let d = 1; d <= dim; d++) cells.push({ day: d, other: false, y: y, m: m });
+    let trail = 1;
     while (cells.length % 7 !== 0) {
-      const d = cells.length - (firstDow + dim) + 1;
       cells.push({
-        day: d,
+        day: trail++,
         other: true,
         y: m === 11 ? y + 1 : y,
         m: m === 11 ? 0 : m + 1
       });
-    }
-    // fix trailing day numbers
-    let trail = 1;
-    for (let i = firstDow + dim; i < cells.length; i++) {
-      cells[i].day = trail++;
     }
 
     const grid = document.getElementById("calGrid");
     grid.innerHTML = cells.map(function (cell) {
       const key = cell.y + "-" + cell.m + "-" + cell.day;
       const isToday = !cell.other && cell.y === today.getFullYear() && cell.m === today.getMonth() && cell.day === today.getDate();
-      const ev = (!cell.other && events[cell.day]) ? events[cell.day] : { statements: [], dues: [], loans: [] };
-      const has = ev.statements.length || ev.dues.length || ev.loans.length;
+      const ev = (!cell.other && events[cell.day]) ? events[cell.day] : { statements: [], dues: [], loans: [], billAmount: 0, loanAmount: 0 };
+      const has = ev.statements.length || ev.dues.length || ev.loans.length || ev.billAmount;
       const top = ev.statements.slice(0, 4).map(function (c) { return ico(c, "sm"); }).join("");
       const bot = ev.dues.slice(0, 4).map(function (c) { return ico(c, "sm"); }).join("");
-      const loanMark = ev.loans.length ? '<div class="cal-loan-dot" title="固定债务"></div>' : "";
       const moreS = ev.statements.length > 4 ? '<span style="font-size:9px;color:var(--muted)">+' + (ev.statements.length - 4) + "</span>" : "";
       const moreD = ev.dues.length > 4 ? '<span style="font-size:9px;color:var(--muted)">+' + (ev.dues.length - 4) + "</span>" : "";
+      let amtLine = "";
+      if (ev.billAmount > 0) amtLine += '<div class="cal-amt" title="信用卡">' + fmtShort(ev.billAmount) + "</div>";
+      if (ev.loanAmount > 0) amtLine += '<div class="cal-amt loan" title="固定债务">' + fmtShort(ev.loanAmount) + "</div>";
+      const loanMark = ev.loans.length && !ev.loanAmount ? '<div class="cal-loan-dot"></div>' : "";
 
       return '<div class="cal-cell' +
         (cell.other ? " other" : "") +
@@ -604,7 +773,7 @@ tr.best { background: rgba(74,222,128,.07); }
         '<div class="cal-top">' + top + moreS + "</div>" +
         '<div class="cal-daynum">' + cell.day + "</div>" +
         '<div class="cal-bot">' + bot + moreD + "</div>" +
-        loanMark +
+        amtLine + loanMark +
       "</div>";
     }).join("");
 
@@ -613,11 +782,10 @@ tr.best { background: rgba(74,222,128,.07); }
         const oy = +el.getAttribute("data-y");
         const om = +el.getAttribute("data-m");
         const od = +el.getAttribute("data-d");
-        const other = el.getAttribute("data-other") === "1";
-        if (other) {
+        if (el.getAttribute("data-other") === "1") {
           viewY = oy; viewM = om;
           selectedKey = oy + "-" + om + "-" + od;
-          renderCalendar();
+          renderAllDynamic();
           openDayModal(oy, om, od);
           return;
         }
@@ -626,21 +794,23 @@ tr.best { background: rgba(74,222,128,.07); }
         openDayModal(oy, om, od);
       });
     });
+
+    renderCashSummary();
   }
 
   function openDayModal(y, m, d) {
     const dim = new Date(y, m + 1, 0).getDate();
     const dateObj = dateOn(y, m, d);
-    const isViewMonth = y === viewY && m === viewM;
-
     const statements = cards.filter(function (c) { return Math.min(c.statement_day, dim) === d; });
     const dues = cards.filter(function (c) { return Math.min(c.due_day, dim) === d; });
     const dayLoans = loans.filter(function (l) { return Math.min(l.due_day, dim) === d; });
+    const dayBills = billsOnDate(y, m, d);
 
-    // 若当天刷卡，各卡免息（仅今天所在日强调；任意日也算）
+    const cardBillTotal = dayBills.reduce(function (s, b) { return s + Number(b.amount || 0); }, 0);
+    const loanTotal = dayLoans.reduce(function (s, l) { return s + Number(l.monthly || 0); }, 0);
+
     const spendRows = cards.map(function (c) {
-      const info = calcCardCore(c, dateObj);
-      return { card: c, info: info };
+      return { card: c, info: calcCardCore(c, dateObj) };
     }).sort(function (a, b) { return b.info.freeDays - a.info.freeDays; });
 
     document.getElementById("modalTitle").textContent =
@@ -648,40 +818,62 @@ tr.best { background: rgba(74,222,128,.07); }
       (y === today.getFullYear() && m === today.getMonth() && d === today.getDate() ? "（今天）" : "");
 
     let html = "";
+    if (cardBillTotal > 0 || loanTotal > 0) {
+      html += '<div class="day-total">当日现金流约 <strong style="color:var(--orange)">' +
+        fmtMoney(cardBillTotal + loanTotal) + "</strong>" +
+        "（信用卡 " + fmtMoney(cardBillTotal) + " + 固定债务 " + fmtMoney(loanTotal) + "）</div>";
+    }
 
-    html += '<div class="modal-block"><h4><span class="dot-stmt"></span> 出账日（账单日）</h4>';
-    if (!statements.length) html += '<div class="modal-empty">当日无出账</div>';
+    html += '<div class="modal-block"><h4><span class="dot-stmt"></span> 出账日</h4>';
+    if (!statements.length) html += '<div class="modal-empty">无</div>';
     else statements.forEach(function (c) {
       html += '<div class="modal-item">' + ico(c, "md") +
         '<div class="info"><div class="title">' + esc(c.name) + " ****" + esc(c.last4 || "") + "</div>" +
-        '<div class="desc">每月 ' + c.statement_day + " 日出账 · 还款日每月 " + c.due_day + " 日</div></div></div>";
+        '<div class="desc">每月 ' + c.statement_day + " 日出账</div></div></div>";
     });
     html += "</div>";
 
-    html += '<div class="modal-block"><h4><span class="dot-due"></span> 信用卡还款日</h4>';
-    if (!dues.length) html += '<div class="modal-empty">当日无信用卡还款</div>';
-    else dues.forEach(function (c) {
-      html += '<div class="modal-item">' + ico(c, "md") +
-        '<div class="info"><div class="title">' + esc(c.name) + " ****" + esc(c.last4 || "") + "</div>" +
-        '<div class="desc">请在当天还清上期账单，避免利息/征信影响</div></div></div>';
-    });
+    html += '<div class="modal-block"><h4><span class="dot-due"></span> 信用卡还款（真实金额）</h4>';
+    if (!dayBills.length && !dues.length) html += '<div class="modal-empty">无</div>';
+    else {
+      // 优先展示有金额的账单
+      const shown = {};
+      dayBills.forEach(function (b) {
+        shown[b.bank] = true;
+        const card = cards.find(function (c) { return bankMatch(b.bank, c.name); });
+        html += '<div class="modal-item">' + (card ? ico(card, "md") : icoGeneric(b.bank, "#475569")) +
+          '<div class="info"><div class="title">' + esc(b.bank) + "</div>" +
+          '<div class="desc">账单还款日 ' + esc(b.due_date) + "</div></div>" +
+          '<div class="amt">' + fmtMoney(b.amount) + "</div></div>";
+      });
+      // 规则还款日但无提取金额的卡
+      dues.forEach(function (c) {
+        if (dayBills.some(function (b) { return bankMatch(b.bank, c.name); })) return;
+        html += '<div class="modal-item">' + ico(c, "md") +
+          '<div class="info"><div class="title">' + esc(c.name) + " ****" + esc(c.last4 || "") + "</div>" +
+          '<div class="desc">固定还款日 · 本期暂无提取到金额</div></div>' +
+          '<div class="amt" style="color:var(--muted)">—</div></div>';
+      });
+    }
     html += "</div>";
 
-    html += '<div class="modal-block"><h4><span class="dot-loan"></span> 固定债务还款</h4>';
-    if (!dayLoans.length) html += '<div class="modal-empty">当日无固定债务</div>';
+    html += '<div class="modal-block"><h4><span class="dot-loan"></span> 固定债务</h4>';
+    if (!dayLoans.length) html += '<div class="modal-empty">无</div>';
     else dayLoans.forEach(function (l) {
+      const est = estimatePrincipalLeft(l, dateObj);
       html += '<div class="modal-item">' + icoLoan(l) +
         '<div class="info"><div class="title">' + esc(l.category) + " · " + esc(l.bank) + "</div>" +
-        '<div class="desc">月供 ' + fmtMoney(l.monthly) + " · 剩余本金 " + fmtMoney(l.principal_left) + "</div></div></div>";
+        '<div class="desc">月供固定 · 估算剩余 ' + fmtMoney(est.left) + "</div></div>" +
+        '<div class="amt" style="color:var(--loan)">' + fmtMoney(l.monthly) + "</div></div>";
     });
     html += "</div>";
 
-    html += '<div class="modal-block"><h4>⭐ 若在这天刷卡，免息排名</h4>';
+    html += '<div class="modal-block"><h4>⭐ 若在这天刷卡 · 免息排名</h4>';
     spendRows.slice(0, 5).forEach(function (r, i) {
       html += '<div class="modal-item">' + ico(r.card, "md") +
         '<div class="info"><div class="title">' + (i + 1) + ". " + esc(r.card.name) +
         ' · <span style="color:var(--green)">' + r.info.freeDays + " 天</span></div>" +
-        '<div class="desc">计入 ' + fmtDate(r.info.statementDate) + " 账单，还 " + fmtDate(r.info.dueDate) + "</div></div></div>";
+        '<div class="desc">计入 ' + fmtDate(r.info.statementDate) + "，还 " + fmtDate(r.info.dueDate) + "</div></div></div>";
     });
     html += "</div>";
 
@@ -693,6 +885,88 @@ tr.best { background: rgba(74,222,128,.07); }
     document.getElementById("modalMask").classList.remove("show");
   }
 
+  function renderAllDynamic() {
+    document.getElementById("metaLine").textContent =
+      "今天 " + fmtDate(today) + " · 配置 " + (DATA.updated_at || "—") +
+      " · " + cards.length + " 张卡 / " + loans.length + " 笔固定债务";
+    const rows = renderHero();
+    renderCardTable(rows);
+    renderLoans();
+    renderCalendar();
+  }
+
+  function setBillStatus(text, cls) {
+    const el = document.getElementById("billStatus");
+    el.textContent = text;
+    el.className = "bill-status" + (cls ? " " + cls : "");
+  }
+
+  function normalizeBills(data) {
+    var list = data.all_bills || data.urgent_bills || [];
+    // 兼容 this_month 原始格式
+    if (!list.length && data.bills) {
+      const map = {};
+      data.bills.forEach(function (b) {
+        const bank = b.bank_name || b.bank || "";
+        const label = b.source_label || "";
+        const name = label ? bank + " (" + label + ")" : bank;
+        const dues = b.due_dates || [];
+        let due = null;
+        for (let i = 0; i < dues.length; i++) {
+          const d = String(dues[i]).replace(/\//g, "-").slice(0, 10);
+          if (d.length >= 10) { due = d; break; }
+        }
+        const amt = (b.amounts || []).reduce(function (s, a) {
+          const cur = a.currency || "CNY";
+          if (cur === "CNY" || cur === "RMB" || !a.currency) return s + Number(a.value || 0);
+          return s;
+        }, 0);
+        if (!name || !due) return;
+        const key = name + "|" + due;
+        if (!map[key]) map[key] = { bank: name, amount: 0, due_date: due };
+        map[key].amount += amt;
+      });
+      list = Object.keys(map).map(function (k) { return map[k]; });
+    }
+    return list.map(function (b) {
+      return {
+        bank: b.bank,
+        amount: Number(b.amount || 0),
+        due_date: b.due_date ? String(b.due_date).replace(/\//g, "-").slice(0, 10) : null
+      };
+    }).filter(function (b) { return b.bank && b.due_date; });
+  }
+
+  async function loadBills() {
+    const sources = DATA.bill_sources || ["./bills.json"];
+    for (let i = 0; i < sources.length; i++) {
+      const url = sources[i];
+      try {
+        const resp = await fetch(url, { cache: "no-store" });
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        const data = await resp.json();
+        billList = normalizeBills(data);
+        billMeta = {
+          source: url,
+          generated_at: data.generated_at || "",
+          ok: true
+        };
+        const live = url.indexOf("http") === 0;
+        setBillStatus(
+          (live ? "已连接账单仪表盘" : "本地账单快照") +
+          " · " + billList.length + " 条" +
+          (billMeta.generated_at ? " · 更新 " + billMeta.generated_at : ""),
+          live ? "ok" : ""
+        );
+        return;
+      } catch (e) {
+        console.warn("bill source failed", url, e);
+      }
+    }
+    setBillStatus("未能加载账单金额（请检查网络或 bills.json）", "warn");
+    billList = [];
+  }
+
   document.getElementById("modalClose").addEventListener("click", closeModal);
   document.getElementById("modalMask").addEventListener("click", function (e) {
     if (e.target === this) closeModal();
@@ -700,19 +974,16 @@ tr.best { background: rgba(74,222,128,.07); }
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeModal();
   });
-
   document.getElementById("btnPrev").addEventListener("click", function () {
     viewM -= 1;
     if (viewM < 0) { viewM = 11; viewY -= 1; }
-    renderCalendar();
+    renderAllDynamic();
   });
   document.getElementById("btnNext").addEventListener("click", function () {
     viewM += 1;
     if (viewM > 11) { viewM = 0; viewY += 1; }
-    renderCalendar();
+    renderAllDynamic();
   });
-
-  // swipe
   (function bindSwipe() {
     const shell = document.getElementById("calShell");
     let startX = 0, startY = 0, tracking = false;
@@ -735,11 +1006,13 @@ tr.best { background: rgba(74,222,128,.07); }
         viewM -= 1;
         if (viewM < 0) { viewM = 11; viewY -= 1; }
       }
-      renderCalendar();
+      renderAllDynamic();
     }, { passive: true });
   })();
 
-  renderCalendar();
+  // 先渲染静态，再拉账单刷新
+  renderAllDynamic();
+  loadBills().then(function () { renderAllDynamic(); });
 })();
 </script>
 </body>
