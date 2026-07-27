@@ -1,0 +1,23 @@
+# secrets & local
+.env
+.env.*
+config.json
+*.pem
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# sync state
+ticktick_sync_state.json
+ticktick_completed_titles.json
