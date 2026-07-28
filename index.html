@@ -476,6 +476,8 @@ tr.best { background: rgba(74,222,128,.07); }
     });
     // 2) 邮件覆盖：仅当邮件字段有值时写入
     billList.forEach(function (b) {
+      // 跳过贷款通知邮件（如招行车贷 2833.33），不污染信用卡的 due_day/statement_day/额度
+      if (findMatchingLoan(b)) return;
       const bankName = b.bank_name || String(b.bank || "").replace(/\s*\(YY\)\s*$/i, "").trim();
       const label = billLabel(b);
       const key = cardKey(bankName, label);
@@ -559,6 +561,8 @@ tr.best { background: rgba(74,222,128,.07); }
   function billsForCard(card) {
     const label = (card.source_label || "").toString().trim();
     return billList.filter(function (b) {
+      // 跳过贷款通知邮件（如招行车贷 2833.33），不计入信用卡的待还/免息计算
+      if (findMatchingLoan(b)) return false;
       const bankName = b.bank_name || b.bank || "";
       if (!bankMatch(bankName, card.name)) return false;
       const bl = billLabel(b);
@@ -610,8 +614,52 @@ tr.best { background: rgba(74,222,128,.07); }
     return billList.filter(function (b) { return b.due_date === key; });
   }
 
+  /**
+   * 银行名匹配（贷款专用）：支持简称"X行"匹配全称"X...银行"
+   * 例：招行↔招商银行、建行↔建设银行、工行↔工商银行、交行↔交通银行
+   * 普通 bankMatch 只能匹配子串关系，无法识别"招行"="招商银行"（字符不同）
+   */
+  function bankMatchLoan(billBank, loanBank) {
+    if (!billBank || !loanBank) return false;
+    const a = billBank.replace(/\s/g, "").replace(/\(YY\)|（YY）/gi, "");
+    const b = loanBank.replace(/\s/g, "");
+    if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true;
+    // 简称"X行"（2字、第2字为"行"）匹配以 X 开头且含"银行"的全称
+    if (b.length === 2 && b.charAt(1) === "行" && a.indexOf("银行") >= 0 && a.charAt(0) === b.charAt(0)) return true;
+    // 单字简称匹配开头
+    if (b.length === 1 && a.charAt(0) === b) return true;
+    return false;
+  }
+
+  /**
+   * 识别邮件账单是否与某笔贷款为同一笔还款（银行邮件通知 vs data.js 手动记录的贷款月供）
+   * 判定：还款日年月日完全匹配 + 银行名匹配 + 金额接近（差<50元 或 <5%）
+   * 命中则视为重复，日历/弹窗只算一次（剔除邮件账单，贷款条目用邮件实际金额展示）
+   * 例：招行 7/28 车贷月供 2834 vs 招行邮件消费信贷账单 2833.33
+   */
+  function findMatchingLoan(bill) {
+    if (!bill || !bill.due_date) return null;
+    const dd = parseYMD(bill.due_date);
+    if (!dd) return null;
+    const by = dd.getFullYear(), bm = dd.getMonth();
+    return loans.find(function (l) {
+      if (!l || !l.due_day) return false;
+      const loanDue = dateOn(by, bm, l.due_day);
+      if (sod(dd).getTime() !== sod(loanDue).getTime()) return false;
+      const billBank = (bill.bank_name || bill.bank || "").replace(/\s*\(YY\)\s*$/i, "").trim();
+      if (!bankMatchLoan(billBank, l.bank)) return false;
+      const ba = Number(bill.amount || 0);
+      const lm = Number(l.monthly || 0);
+      if (lm <= 0) return false;
+      const diff = Math.abs(ba - lm);
+      return diff < 50 || diff / lm < 0.05;
+    }) || null;
+  }
+
   function dayBillTotal(y, m, d) {
-    return billsOnDate(y, m, d).reduce(function (s, b) { return s + Number(b.amount || 0); }, 0);
+    return billsOnDate(y, m, d)
+      .filter(function (b) { return !findMatchingLoan(b); })
+      .reduce(function (s, b) { return s + Number(b.amount || 0); }, 0);
   }
 
   function fmtLimit(n) {
@@ -925,6 +973,8 @@ tr.best { background: rgba(74,222,128,.07); }
     // 还款：仅用邮件 due_date 打点（不一致时绝不回退到错误配置日）
     const stmtMarked = {};
     billList.forEach(function (b) {
+      // 跳过与贷款重复的邮件账单（同一笔还款银行通知 vs 手动记录，避免算两次）
+      if (findMatchingLoan(b)) return;
       const bankName = b.bank_name || b.bank || "";
       const label = billLabel(b);
       const card = cards.find(function (c) {
@@ -978,7 +1028,9 @@ tr.best { background: rgba(74,222,128,.07); }
       const day = Math.min(l.due_day, dim);
       const b = bucket(day);
       b.loans.push(l);
-      b.loanAmount += Number(l.monthly || 0);
+      // 若有匹配的邮件账单（贷款通知），用邮件实际金额（邮件为准）
+      const matchBill = billList.find(function (bill) { return findMatchingLoan(bill) === l; });
+      b.loanAmount += matchBill ? Number(matchBill.amount || 0) : Number(l.monthly || 0);
     });
     return map;
   }
@@ -1073,10 +1125,13 @@ tr.best { background: rgba(74,222,128,.07); }
     const statements = cards.filter(function (c) { return Math.min(c.statement_day, dim) === d; });
     const dues = cards.filter(function (c) { return Math.min(c.due_day, dim) === d; });
     const dayLoans = loans.filter(function (l) { return Math.min(l.due_day, dim) === d; });
-    const dayBills = billsOnDate(y, m, d);
+    const dayBills = billsOnDate(y, m, d).filter(function (b) { return !findMatchingLoan(b); });
 
     const cardBillTotal = dayBills.reduce(function (s, b) { return s + Number(b.amount || 0); }, 0);
-    const loanTotal = dayLoans.reduce(function (s, l) { return s + Number(l.monthly || 0); }, 0);
+    const loanTotal = dayLoans.reduce(function (s, l) {
+      const matchBill = billsOnDate(y, m, d).find(function (b) { return findMatchingLoan(b) === l; });
+      return s + (matchBill ? Number(matchBill.amount || 0) : Number(l.monthly || 0));
+    }, 0);
 
     const spendRows = cards.map(function (c) {
       return { card: c, info: calcCardCore(c, dateObj) };
@@ -1134,10 +1189,14 @@ tr.best { background: rgba(74,222,128,.07); }
     if (!dayLoans.length) html += '<div class="modal-empty">无</div>';
     else dayLoans.forEach(function (l) {
       const est = estimatePrincipalLeft(l, dateObj);
+      const matchBill = billsOnDate(y, m, d).find(function (b) { return findMatchingLoan(b) === l; });
+      const showAmt = matchBill ? Number(matchBill.amount || 0) : Number(l.monthly || 0);
       html += '<div class="modal-item">' + icoLoan(l) +
-        '<div class="info"><div class="title">' + esc(l.category) + " · " + esc(l.bank) + "</div>" +
-        '<div class="desc">月供固定 · 估算剩余 ' + fmtMoney(est.left) + "</div></div>" +
-        '<div class="amt" style="color:var(--loan)">' + fmtMoney(l.monthly) + "</div></div>";
+        '<div class="info"><div class="title">' + esc(l.category) + " · " + esc(l.bank) +
+          (matchBill ? '<span class="pill est">邮件</span>' : "") + "</div>" +
+        '<div class="desc">' + (matchBill ? "邮件通知金额" : "月供固定") +
+        " · 估算剩余 " + fmtMoney(est.left) + "</div></div>" +
+        '<div class="amt" style="color:var(--loan)">' + fmtMoney(showAmt) + "</div></div>";
     });
     html += "</div>";
 
