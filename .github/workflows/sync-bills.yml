@@ -1,0 +1,41 @@
+name: 同步账单数据
+
+on:
+  schedule:
+    # UTC 22:00 和 04:00 = 北京 06:00 和 12:00
+    # 比 bank-bill-extractor（UTC 20:00/02:00）晚 2 小时，确保拿到最新数据
+    # GitHub Actions cron 有延迟，实际执行约在设定后 3-5 小时
+    - cron: '0 22 * * *'
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'scripts/sync_from_dashboard.py'
+      - '.github/workflows/sync-bills.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 同步账单（从 bank-bill-extractor data.json）
+        run: python scripts/sync_from_dashboard.py
+
+      - name: 提交 bills.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add bills.json
+          git commit -m "Auto-sync: 账单数据 $(date -u '+%Y-%m-%d %H:%M') UTC" || echo "No changes"
+          git push

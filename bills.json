@@ -1,221 +1,103 @@
 {
-  "generated_at": "2026-07-27 10:37:12",
-  "source": "live email extract",
+  "generated_at": "2026-08-18 13:38:33",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-08-18 10:49:30)",
   "all_bills": [
-    {
-      "bank_name": "广发银行",
-      "source_label": "",
-      "bank": "广发银行",
-      "amount": 20096.46,
-      "due_date": "2026-07-06",
-      "due_day": 6,
-      "statement_date": null,
-      "statement_day": 17,
-      "credit_limit": 50000.0,
-      "subjects": [
-        "【广发卡 07月还款提醒】",
-        "【广发卡 06月还款提醒】"
-      ]
-    },
-    {
-      "bank_name": "建设银行",
-      "source_label": "",
-      "bank": "建设银行",
-      "amount": 3342.06,
-      "due_date": "2026-07-15",
-      "due_day": 15,
-      "statement_date": "2026-06-26",
-      "statement_day": 26,
-      "credit_limit": 80000.0,
-      "subjects": [
-        "中国建设银行信用卡电子账单"
-      ]
-    },
-    {
-      "bank_name": "长安银行",
-      "source_label": "YY",
-      "bank": "长安银行 (YY)",
-      "amount": 0.0,
-      "due_date": "2026-07-15",
-      "due_day": 15,
-      "statement_date": "2026-06-20",
-      "statement_day": 20,
-      "credit_limit": null,
-      "subjects": [
-        "长安银行信用卡电子账单"
-      ]
-    },
-    {
-      "bank_name": "民生银行",
-      "source_label": "",
-      "bank": "民生银行",
-      "amount": 188.5,
-      "due_date": "2026-07-17",
-      "due_day": 17,
-      "statement_date": "2026-06-27",
-      "statement_day": 27,
-      "credit_limit": null,
-      "subjects": [
-        "民生信用卡2026年06月电子对账单"
-      ]
-    },
     {
       "bank_name": "工商银行",
       "source_label": "",
       "bank": "工商银行",
-      "amount": 22212.13,
-      "due_date": "2026-07-19",
+      "amount": 9644.38,
+      "due_date": "2026-08-19",
       "due_day": 19,
       "statement_date": null,
       "statement_day": null,
       "credit_limit": 80000.0,
-      "subjects": [
-        "中国工商银行客户对账单(ICBC Peony Card Bank Statement)"
-      ]
+      "subjects": []
     },
     {
       "bank_name": "浦发银行",
       "source_label": "",
       "bank": "浦发银行",
-      "amount": 3871.95,
-      "due_date": "2026-07-24",
+      "amount": 9312.73,
+      "due_date": "2026-08-24",
       "due_day": 24,
       "statement_date": null,
       "statement_day": null,
       "credit_limit": null,
-      "subjects": [
-        "浦发银行-信用卡电子账单"
-      ]
+      "subjects": []
     },
     {
       "bank_name": "邮储银行",
       "source_label": "",
       "bank": "邮储银行",
-      "amount": 24797.2,
-      "due_date": "2026-07-27",
+      "amount": 18918.38,
+      "due_date": "2026-08-27",
       "due_day": 27,
-      "statement_date": "2026-07-06",
+      "statement_date": "2026-08-06",
       "statement_day": 6,
       "credit_limit": 50000.0,
-      "subjects": [
-        "邮储银行信用卡电子账单"
-      ]
+      "subjects": []
     },
     {
       "bank_name": "招商银行",
       "source_label": "",
       "bank": "招商银行",
       "amount": 2833.33,
-      "due_date": "2026-07-28",
+      "due_date": "2026-08-28",
       "due_day": 28,
       "statement_date": null,
       "statement_day": null,
       "credit_limit": null,
-      "subjects": [
-        "招商银行信用卡中心消费信贷账单"
-      ]
+      "subjects": []
     },
     {
       "bank_name": "兴业银行",
       "source_label": "",
       "bank": "兴业银行",
-      "amount": 9204.48,
-      "due_date": "2026-07-30",
+      "amount": 54342.68,
+      "due_date": "2026-08-30",
       "due_day": 30,
-      "statement_date": "2026-07-10",
+      "statement_date": "2026-08-10",
       "statement_day": 10,
       "credit_limit": 75700.0,
-      "subjects": [
-        "兴业银行信用卡2026年07月电子账单"
-      ]
+      "subjects": []
     },
     {
       "bank_name": "光大银行",
       "source_label": "",
       "bank": "光大银行",
-      "amount": 7654.09,
-      "due_date": "2026-07-31",
+      "amount": 57482.0,
+      "due_date": "2026-08-31",
       "due_day": 31,
-      "statement_date": "2026-07-12",
+      "statement_date": "2026-08-12",
       "statement_day": 12,
       "credit_limit": 96000.0,
-      "subjects": [
-        "光大信用卡电子账单"
-      ]
+      "subjects": []
+    },
+    {
+      "bank_name": "兴业银行",
+      "source_label": "YY",
+      "bank": "兴业银行 (YY)",
+      "amount": 92.28,
+      "due_date": "2026-08-31",
+      "due_day": 31,
+      "statement_date": "2026-08-11",
+      "statement_day": 11,
+      "credit_limit": 10200.0,
+      "subjects": []
     },
     {
       "bank_name": "平安银行",
       "source_label": "",
       "bank": "平安银行",
-      "amount": 6613.59,
-      "due_date": "2026-08-01",
+      "amount": 4015.43,
+      "due_date": "2026-09-01",
       "due_day": 1,
-      "statement_date": "2026-07-13",
+      "statement_date": "2026-08-13",
       "statement_day": 13,
       "credit_limit": 10000.0,
-      "subjects": [
-        "平安信用卡电子账单"
-      ]
-    },
-    {
-      "bank_name": "广发银行",
-      "source_label": "",
-      "bank": "广发银行",
-      "amount": 1544.05,
-      "due_date": "2026-08-06",
-      "due_day": 6,
-      "statement_date": "2026-07-17",
-      "statement_day": 17,
-      "credit_limit": 50000.0,
-      "subjects": [
-        "广发信用卡 2026年07月电子账单"
-      ]
-    },
-    {
-      "bank_name": "招商银行",
-      "source_label": "",
-      "bank": "招商银行",
-      "amount": 22139.32,
-      "due_date": "2026-08-06",
-      "due_day": 6,
-      "statement_date": null,
-      "statement_day": null,
-      "credit_limit": null,
-      "subjects": [
-        "招商银行分期信用卡电子账单",
-        "招商银行信用卡电子账单",
-        "招商银行信用卡ｅ招贷账单"
-      ]
-    },
-    {
-      "bank_name": "交通银行",
-      "source_label": "",
-      "bank": "交通银行",
-      "amount": 32950.34,
-      "due_date": "2026-08-15",
-      "due_day": 15,
-      "statement_date": "2026-06-22",
-      "statement_day": 22,
-      "credit_limit": 58000.0,
-      "subjects": [
-        "交通银行白金信用卡2026年07月电子账单"
-      ]
-    },
-    {
-      "bank_name": "长安银行",
-      "source_label": "YY",
-      "bank": "长安银行 (YY)",
-      "amount": 18208.0,
-      "due_date": "2026-08-15",
-      "due_day": 15,
-      "statement_date": "2026-07-20",
-      "statement_day": 20,
-      "credit_limit": null,
-      "subjects": [
-        "长安银行信用卡电子账单",
-        "Fw: 长安银行信用卡电子账单"
-      ]
+      "subjects": []
     }
   ],
-  "total_all": 175655.5
+  "total_all": 156641.21
 }
