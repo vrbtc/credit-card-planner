@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-19 12:39:06",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-08-19 10:51:29)",
+  "generated_at": "2026-08-20 06:27:16",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-08-20 04:32:18)",
   "all_bills": [
     {
       "bank_name": "工商银行",
@@ -30,12 +30,12 @@
       "bank_name": "邮储银行",
       "source_label": "",
       "bank": "邮储银行",
-      "amount": 18918.38,
+      "amount": 21188.04,
       "due_date": "2026-08-27",
       "due_day": 27,
       "statement_date": "2026-08-06",
       "statement_day": 6,
-      "credit_limit": 50000.0,
+      "credit_limit": 125000.0,
       "subjects": []
     },
     {
@@ -111,5 +111,5 @@
       "subjects": []
     }
   ],
-  "total_all": 163395.4
+  "total_all": 165665.06
 }
