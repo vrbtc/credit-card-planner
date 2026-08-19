@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-19 06:25:43",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-08-19 04:28:08)",
+  "generated_at": "2026-08-19 12:39:06",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-08-19 10:51:29)",
   "all_bills": [
     {
       "bank_name": "工商银行",
@@ -42,7 +42,7 @@
       "bank_name": "招商银行",
       "source_label": "",
       "bank": "招商银行",
-      "amount": 2833.33,
+      "amount": 9327.57,
       "due_date": "2026-08-28",
       "due_day": 28,
       "statement_date": null,
@@ -111,5 +111,5 @@
       "subjects": []
     }
   ],
-  "total_all": 156901.16
+  "total_all": 163395.4
 }
