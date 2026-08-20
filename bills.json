@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-20 06:27:16",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-08-20 04:32:18)",
+  "generated_at": "2026-08-20 12:39:29",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-08-20 10:50:38)",
   "all_bills": [
     {
       "bank_name": "工商银行",
