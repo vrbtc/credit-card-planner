@@ -30,8 +30,16 @@ body {
   color: var(--text); min-height: 100vh; line-height: 1.45;
   -webkit-tap-highlight-color: transparent;
 }
-.container { max-width: 980px; margin: 0 auto; padding: 20px 12px 56px; }
+.container { max-width: 980px; margin: 0 auto; padding: 20px 12px 56px; position: relative; }
 .header { text-align: center; margin-bottom: 18px; }
+.nav-link {
+  position: absolute; top: 24px; right: 12px; z-index: 10;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  background: var(--panel); border: 1px solid var(--border); color: var(--blue);
+  text-decoration: none; transition: all .2s;
+}
+.nav-link:hover { border-color: var(--blue); background: var(--panel2); }
 .header h1 {
   font-size: 26px; font-weight: 800;
   background: linear-gradient(135deg, var(--blue), var(--purple));
@@ -245,6 +253,7 @@ tr.best { background: rgba(74,222,128,.07); }
   .hero-name { font-size: 22px; }
   .cal-cell { min-height: 70px; }
   .bank-ico.sm { width: 14px; height: 14px; font-size: 8px; border-radius: 3px; }
+  .nav-link { position: static; margin-top: 10px; }
 }
 @media (min-width: 720px) {
   .modal-mask { align-items: center; }
@@ -253,6 +262,7 @@ tr.best { background: rgba(74,222,128,.07); }
 </head>
 <body>
 <div class="container">
+  <a class="nav-link" href="https://vrbtc.github.io/bank-bill-extractor/" title="打开账单仪表盘">🏦 账单仪表盘 →</a>
   <header class="header">
     <h1>💰 现金流日历 · 刷卡规划</h1>
     <div class="sub">邮件为准 · 真实金额/额度 · 最长免息 · 出账/还款日历 · YY 标注</div>
