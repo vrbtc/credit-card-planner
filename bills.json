@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-02 07:52:00",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-09-02 06:28:50)",
+  "generated_at": "2026-09-02 16:33:34",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-09-02 14:40:35)",
   "all_bills": [
     {
       "bank_name": "广发银行",
@@ -73,7 +73,19 @@
       "statement_day": 26,
       "credit_limit": 80000.0,
       "subjects": []
+    },
+    {
+      "bank_name": "工商银行",
+      "source_label": "",
+      "bank": "工商银行",
+      "amount": 691.47,
+      "due_date": "2026-09-19",
+      "due_day": 19,
+      "statement_date": null,
+      "statement_day": null,
+      "credit_limit": 80000.0,
+      "subjects": []
     }
   ],
-  "total_all": 83605.67
+  "total_all": 84297.14
 }
