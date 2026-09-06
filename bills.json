@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-06 07:37:12",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-09-06 05:59:02)",
+  "generated_at": "2026-09-06 16:27:45",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-09-06 14:42:55)",
   "all_bills": [
     {
       "bank_name": "广发银行",
@@ -33,8 +33,8 @@
       "amount": 2269.66,
       "due_date": "2026-09-06",
       "due_day": 6,
-      "statement_date": "2026-08-06",
-      "statement_day": 6,
+      "statement_date": "2026-08-16",
+      "statement_day": 16,
       "credit_limit": 125000.0,
       "subjects": []
     },
