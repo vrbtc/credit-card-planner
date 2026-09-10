@@ -1,19 +1,7 @@
 {
-  "generated_at": "2026-09-10 16:46:06",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-09-10 14:52:33)",
+  "generated_at": "2026-09-11 07:49:45",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-09-11 06:21:29)",
   "all_bills": [
-    {
-      "bank_name": "平安银行",
-      "source_label": "YY",
-      "bank": "平安银行 (YY)",
-      "amount": 156.24,
-      "due_date": "2026-09-07",
-      "due_day": 7,
-      "statement_date": "2026-08-19",
-      "statement_day": 19,
-      "credit_limit": 6000.0,
-      "subjects": []
-    },
     {
       "bank_name": "交通银行",
       "source_label": "",
@@ -75,5 +63,5 @@
       "subjects": []
     }
   ],
-  "total_all": 114693.95
+  "total_all": 114537.71
 }
