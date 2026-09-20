@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-20 07:57:03",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-09-20 06:15:07)",
+  "generated_at": "2026-09-20 17:09:01",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-09-20 15:18:35)",
   "all_bills": [
     {
       "bank_name": "浦发银行",
@@ -39,6 +39,18 @@
       "subjects": []
     },
     {
+      "bank_name": "兴业银行",
+      "source_label": "",
+      "bank": "兴业银行",
+      "amount": 19427.61,
+      "due_date": "2026-09-30",
+      "due_day": 30,
+      "statement_date": "2026-09-10",
+      "statement_day": 10,
+      "credit_limit": 75700.0,
+      "subjects": []
+    },
+    {
       "bank_name": "光大银行",
       "source_label": "",
       "bank": "光大银行",
@@ -48,18 +60,6 @@
       "statement_date": "2026-09-12",
       "statement_day": 12,
       "credit_limit": 96000.0,
-      "subjects": []
-    },
-    {
-      "bank_name": "兴业银行",
-      "source_label": "YY",
-      "bank": "兴业银行 (YY)",
-      "amount": 71.62,
-      "due_date": "2026-10-01",
-      "due_day": 1,
-      "statement_date": "2026-08-11",
-      "statement_day": 11,
-      "credit_limit": 10200.0,
       "subjects": []
     },
     {
@@ -87,5 +87,5 @@
       "subjects": []
     }
   ],
-  "total_all": 138461.46
+  "total_all": 157817.45
 }
