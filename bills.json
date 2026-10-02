@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-02 09:23:00",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-02 07:47:10)",
+  "generated_at": "2026-10-02 18:21:58",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-02 15:47:57)",
   "all_bills": [
     {
       "bank_name": "光大银行",
@@ -133,7 +133,19 @@
       "statement_day": 27,
       "credit_limit": null,
       "subjects": []
+    },
+    {
+      "bank_name": "工商银行",
+      "source_label": "",
+      "bank": "工商银行",
+      "amount": 37201.31,
+      "due_date": "2026-10-19",
+      "due_day": 19,
+      "statement_date": null,
+      "statement_day": null,
+      "credit_limit": 80000.0,
+      "subjects": []
     }
   ],
-  "total_all": 193152.23
+  "total_all": 230353.54
 }
