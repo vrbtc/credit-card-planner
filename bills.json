@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-01 18:47:15",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-01 16:05:40)",
+  "generated_at": "2026-10-02 09:23:00",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-02 07:47:10)",
   "all_bills": [
     {
       "bank_name": "光大银行",
@@ -48,6 +48,18 @@
       "statement_date": "2026-09-17",
       "statement_day": 17,
       "credit_limit": 50000.0,
+      "subjects": []
+    },
+    {
+      "bank_name": "招商银行",
+      "source_label": "",
+      "bank": "招商银行",
+      "amount": 21662.510000000002,
+      "due_date": "2026-10-06",
+      "due_day": 6,
+      "statement_date": null,
+      "statement_day": null,
+      "credit_limit": null,
       "subjects": []
     },
     {
@@ -123,5 +135,5 @@
       "subjects": []
     }
   ],
-  "total_all": 171489.72
+  "total_all": 193152.23
 }
