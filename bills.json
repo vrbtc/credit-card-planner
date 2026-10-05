@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-05 08:32:07",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-05 06:53:48)",
+  "generated_at": "2026-10-05 19:16:01",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-05 16:00:46)",
   "all_bills": [
     {
       "bank_name": "广发银行",
@@ -109,7 +109,19 @@
       "statement_day": null,
       "credit_limit": 80000.0,
       "subjects": []
+    },
+    {
+      "bank_name": "浦发银行",
+      "source_label": "",
+      "bank": "浦发银行",
+      "amount": 22934.88,
+      "due_date": "2026-10-22",
+      "due_day": 22,
+      "statement_date": null,
+      "statement_day": null,
+      "credit_limit": null,
+      "subjects": []
     }
   ],
-  "total_all": 206689.57
+  "total_all": 229624.45
 }
