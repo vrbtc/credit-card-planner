@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-06 19:05:32",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-06 16:22:58)",
+  "generated_at": "2026-10-07 09:14:58",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-07 07:40:16)",
   "all_bills": [
     {
       "bank_name": "广发银行",
