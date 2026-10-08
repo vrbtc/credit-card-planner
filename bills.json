@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-07 18:54:43",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-07 15:59:17)",
+  "generated_at": "2026-10-08 09:36:38",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-08 08:04:38)",
   "all_bills": [
     {
       "bank_name": "平安银行",
@@ -12,18 +12,6 @@
       "statement_date": "2026-08-19",
       "statement_day": 19,
       "credit_limit": 6000.0,
-      "subjects": []
-    },
-    {
-      "bank_name": "邮储银行",
-      "source_label": "",
-      "bank": "邮储银行",
-      "amount": 12948.220000000001,
-      "due_date": "2026-10-07",
-      "due_day": 7,
-      "statement_date": "2026-09-16",
-      "statement_day": 16,
-      "credit_limit": 125000.0,
       "subjects": []
     },
     {
@@ -99,5 +87,5 @@
       "subjects": []
     }
   ],
-  "total_all": 170029.17
+  "total_all": 157080.95
 }
