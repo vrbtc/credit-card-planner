@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-11 08:43:21",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-11 07:20:57)",
+  "generated_at": "2026-10-11 18:40:19",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-11 16:04:48)",
   "all_bills": [
     {
       "bank_name": "交通银行",
@@ -85,7 +85,19 @@
       "statement_day": 16,
       "credit_limit": 125000.0,
       "subjects": []
+    },
+    {
+      "bank_name": "兴业银行",
+      "source_label": "",
+      "bank": "兴业银行",
+      "amount": 17523.23,
+      "due_date": "2026-10-30",
+      "due_day": 30,
+      "statement_date": "2026-10-10",
+      "statement_day": 10,
+      "credit_limit": 75700.0,
+      "subjects": []
     }
   ],
-  "total_all": 167469.97
+  "total_all": 184993.2
 }
