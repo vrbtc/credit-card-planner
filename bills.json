@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-18 07:50:54",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-18 06:03:08)",
+  "generated_at": "2026-10-18 16:41:06",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-18 14:51:04)",
   "all_bills": [
     {
       "bank_name": "民生银行",
@@ -87,6 +87,18 @@
       "subjects": []
     },
     {
+      "bank_name": "广发银行",
+      "source_label": "",
+      "bank": "广发银行",
+      "amount": 130.3,
+      "due_date": "2026-11-06",
+      "due_day": 6,
+      "statement_date": "2026-10-17",
+      "statement_day": 17,
+      "credit_limit": 50000.0,
+      "subjects": []
+    },
+    {
       "bank_name": "邮储银行",
       "source_label": "",
       "bank": "邮储银行",
@@ -99,5 +111,5 @@
       "subjects": []
     }
   ],
-  "total_all": 154406.63
+  "total_all": 154536.93
 }
