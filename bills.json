@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-19 07:58:31",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-19 06:18:17)",
+  "generated_at": "2026-10-19 17:42:23",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-19 15:09:44)",
   "all_bills": [
     {
       "bank_name": "浦发银行",
@@ -21,8 +21,8 @@
       "amount": 10678.59,
       "due_date": "2026-10-27",
       "due_day": 27,
-      "statement_date": "2026-09-16",
-      "statement_day": 16,
+      "statement_date": "2026-10-06",
+      "statement_day": 6,
       "credit_limit": 125000.0,
       "subjects": []
     },
@@ -75,17 +75,41 @@
       "subjects": []
     },
     {
+      "bank_name": "招商银行",
+      "source_label": "",
+      "bank": "招商银行",
+      "amount": 8462.3,
+      "due_date": "2026-11-06",
+      "due_day": 6,
+      "statement_date": null,
+      "statement_day": null,
+      "credit_limit": null,
+      "subjects": []
+    },
+    {
+      "bank_name": "招商银行",
+      "source_label": "",
+      "bank": "招商银行(分期卡)",
+      "amount": 2986.72,
+      "due_date": "2026-11-06",
+      "due_day": 6,
+      "statement_date": null,
+      "statement_day": null,
+      "credit_limit": null,
+      "subjects": []
+    },
+    {
       "bank_name": "邮储银行",
       "source_label": "",
       "bank": "邮储银行",
       "amount": 2269.58,
       "due_date": "2026-11-06",
       "due_day": 6,
-      "statement_date": "2026-09-16",
-      "statement_day": 16,
+      "statement_date": "2026-10-06",
+      "statement_day": 6,
       "credit_limit": 125000.0,
       "subjects": []
     }
   ],
-  "total_all": 93029.96
+  "total_all": 104478.98
 }
