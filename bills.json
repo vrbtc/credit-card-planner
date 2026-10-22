@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-21 17:12:20",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-21 14:51:22)",
+  "generated_at": "2026-10-22 08:28:42",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-22 07:05:27)",
   "all_bills": [
     {
       "bank_name": "浦发银行",
@@ -121,7 +121,19 @@
       "statement_day": 19,
       "credit_limit": 6000.0,
       "subjects": []
+    },
+    {
+      "bank_name": "交通银行",
+      "source_label": "",
+      "bank": "交通银行",
+      "amount": 54762.78,
+      "due_date": "2026-11-15",
+      "due_day": 15,
+      "statement_date": "2026-08-22",
+      "statement_day": 22,
+      "credit_limit": 58000.0,
+      "subjects": []
     }
   ],
-  "total_all": 104725.68
+  "total_all": 159488.46
 }
