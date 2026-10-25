@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-24 16:44:31",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-24 14:43:04)",
+  "generated_at": "2026-10-25 08:04:26",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-25 06:18:51)",
   "all_bills": [
     {
       "bank_name": "邮储银行",
