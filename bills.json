@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-27 17:40:20",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-27 17:38:41)",
+  "generated_at": "2026-10-28 09:01:23",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-10-28 07:38:42)",
   "all_bills": [
     {
       "bank_name": "兴业银行",
@@ -117,7 +117,7 @@
       "amount": 25046.48,
       "due_date": "2026-11-15",
       "due_day": 15,
-      "statement_date": "2026-09-26",
+      "statement_date": "2026-10-26",
       "statement_day": 26,
       "credit_limit": 80000.0,
       "subjects": []
