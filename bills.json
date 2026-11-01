@@ -1,19 +1,7 @@
 {
-  "generated_at": "2026-10-31 18:14:38",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-10-31 18:13:17)",
+  "generated_at": "2026-11-01 08:46:46",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-01 07:11:43)",
   "all_bills": [
-    {
-      "bank_name": "光大银行",
-      "source_label": "",
-      "bank": "光大银行",
-      "amount": 34400.25,
-      "due_date": "2026-10-31",
-      "due_day": 31,
-      "statement_date": "2026-10-12",
-      "statement_day": 12,
-      "credit_limit": 96000.0,
-      "subjects": []
-    },
     {
       "bank_name": "平安银行",
       "source_label": "",
@@ -123,5 +111,5 @@
       "subjects": []
     }
   ],
-  "total_all": 155817.26
+  "total_all": 121417.01
 }
