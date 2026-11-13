@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-12 20:20:07",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-12 20:14:13)",
+  "generated_at": "2026-11-13 10:27:35",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-13 08:57:46)",
   "all_bills": [
     {
       "bank_name": "交通银行",
