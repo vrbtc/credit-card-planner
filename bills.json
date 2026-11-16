@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-15 19:48:38",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-15 19:47:01)",
+  "generated_at": "2026-11-16 09:37:42",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-16 07:52:01)",
   "all_bills": [
     {
       "bank_name": "民生银行",
