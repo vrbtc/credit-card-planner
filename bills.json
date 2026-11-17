@@ -1,19 +1,7 @@
 {
-  "generated_at": "2026-11-17 12:21:16",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-17 10:50:06)",
+  "generated_at": "2026-11-17 20:52:20",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-17 20:48:18)",
   "all_bills": [
-    {
-      "bank_name": "民生银行",
-      "source_label": "",
-      "bank": "民生银行",
-      "amount": 22419.02,
-      "due_date": "2026-11-16",
-      "due_day": 16,
-      "statement_date": "2026-10-27",
-      "statement_day": 27,
-      "credit_limit": null,
-      "subjects": []
-    },
     {
       "bank_name": "工商银行",
       "source_label": "",
@@ -47,7 +35,7 @@
       "due_day": 26,
       "statement_date": "2026-11-06",
       "statement_day": 6,
-      "credit_limit": 50000.0,
+      "credit_limit": 125000.0,
       "subjects": []
     },
     {
@@ -73,7 +61,19 @@
       "statement_day": 13,
       "credit_limit": 15000.0,
       "subjects": []
+    },
+    {
+      "bank_name": "邮储银行",
+      "source_label": "",
+      "bank": "邮储银行",
+      "amount": 2270.47,
+      "due_date": "2026-12-06",
+      "due_day": 6,
+      "statement_date": "2026-11-06",
+      "statement_day": 6,
+      "credit_limit": 125000.0,
+      "subjects": []
     }
   ],
-  "total_all": 149398.66
+  "total_all": 129250.11
 }
