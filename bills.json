@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-20 10:52:29",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-20 09:42:53)",
+  "generated_at": "2026-11-20 20:36:27",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-20 20:32:19)",
   "all_bills": [
     {
       "bank_name": "浦发银行",
@@ -111,6 +111,18 @@
       "subjects": []
     },
     {
+      "bank_name": "平安银行",
+      "source_label": "YY",
+      "bank": "平安银行 (YY)",
+      "amount": 3900.66,
+      "due_date": "2026-12-07",
+      "due_day": 7,
+      "statement_date": "2026-08-19",
+      "statement_day": 19,
+      "credit_limit": 6000.0,
+      "subjects": []
+    },
+    {
       "bank_name": "建设银行",
       "source_label": "YY",
       "bank": "建设银行 (YY)",
@@ -123,5 +135,5 @@
       "subjects": []
     }
   ],
-  "total_all": 213569.59
+  "total_all": 217470.25
 }
