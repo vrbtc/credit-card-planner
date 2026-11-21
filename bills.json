@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-20 20:36:27",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-20 20:32:19)",
+  "generated_at": "2026-11-21 11:00:22",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-21 09:12:30)",
   "all_bills": [
     {
       "bank_name": "浦发银行",
