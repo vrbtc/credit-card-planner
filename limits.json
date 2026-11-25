@@ -1,0 +1,94 @@
+{
+  "updated_at": "2026-11-25T14:50:59+08:00",
+  "source": "RBANK sms ingest auto push",
+  "cards": [
+    {
+      "bank": "工商银行",
+      "last4": "9889",
+      "available_limit": 67328.0,
+      "total_limit": 80000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "浦发银行",
+      "last4": "8182",
+      "available_limit": 67229.0,
+      "total_limit": 88000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "邮储银行",
+      "last4": "6983",
+      "available_limit": 2954.0,
+      "total_limit": 50000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "兴业银行",
+      "last4": "1561",
+      "available_limit": 18643.0,
+      "total_limit": 75700,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "光大银行",
+      "last4": "8685",
+      "available_limit": 30296.0,
+      "total_limit": 96000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "平安银行",
+      "last4": "9918",
+      "available_limit": 3535.0,
+      "total_limit": 10000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "广发银行",
+      "last4": "8948",
+      "available_limit": 125.0,
+      "total_limit": 50000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "招商银行",
+      "last4": "6478",
+      "available_limit": 24910.0,
+      "total_limit": 45000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "交通银行",
+      "last4": "8940",
+      "available_limit": 24348.23,
+      "total_limit": 58000,
+      "event_ts": "2026-11-25T14:50:59+08:00",
+      "source": "sms"
+    },
+    {
+      "bank": "建设银行",
+      "last4": "9981",
+      "available_limit": 56478.0,
+      "total_limit": 80000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    },
+    {
+      "bank": "民生银行",
+      "last4": "2821",
+      "available_limit": 25874.0,
+      "total_limit": 54000,
+      "event_ts": "2026-11-25T10:00:00+08:00",
+      "source": "manual"
+    }
+  ]
+}

@@ -198,6 +198,20 @@ tr.best { background: rgba(74,222,128,.07); }
 }
 .limit-val { color: var(--blue); font-weight: 700; }
 
+/* 可用额度区块（短信实时为准） */
+.limits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.limit-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.lc-head { display: flex; align-items: center; gap: 8px; }
+.lc-name { font-size: 13px; font-weight: 700; }
+.lc-sub { font-size: 10px; color: #64748b; }
+.lc-avail { font-size: 20px; font-weight: 800; margin-top: 6px; font-variant-numeric: tabular-nums; color: var(--green); }
+.lc-avail.yellow { color: var(--yellow); }
+.lc-avail.red { color: var(--red); }
+.lc-total { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.usage-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.08); margin-top: 8px; overflow: hidden; }
+.usage-bar i { display: block; height: 100%; border-radius: 3px; }
+.lc-empty { text-align: center; color: var(--muted); padding: 16px; font-size: 13px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; }
+
 .modal-mask {
   position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 50;
   display: none; align-items: flex-end; justify-content: center; padding: 16px;
@@ -303,6 +317,14 @@ tr.best { background: rgba(74,222,128,.07); }
 
   <section class="section">
     <div class="section-title">
+      <span class="dot" style="background:var(--green)"></span>可用额度（短信实时为准）
+      <span class="hint" id="limitsHint"></span>
+    </div>
+    <div class="limits-grid" id="limitsGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">
       <span class="dot" style="background:var(--green)"></span>各卡免息期 · 待还 · 额度（邮件为准）
       <span class="hint" id="cardCount"></span>
     </div>
@@ -312,6 +334,7 @@ tr.best { background: rgba(74,222,128,.07); }
           <tr>
             <th>卡片</th>
             <th>信用额度</th>
+            <th>可用额度</th>
             <th>出账日</th>
             <th>还款日</th>
             <th>待还金额</th>
@@ -389,6 +412,68 @@ tr.best { background: rgba(74,222,128,.07); }
   /** @type {any[]} 合并后的卡（邮件优先） */
   let cards = fallbackCards.slice();
   let billMeta = { source: "", generated_at: "", ok: false };
+  /** @type {any|null} 可用额度（短信链路推送 limits.json） */
+  let limitsDoc = null;
+
+  /** 按尾号（优先）→ 银行名匹配可用额度记录 */
+  function limitFor(card) {
+    if (!limitsDoc || !limitsDoc.cards) return null;
+    const l4 = (card.last4 || "").trim();
+    if (l4) {
+      const hit = limitsDoc.cards.find(function (x) { return (x.last4 || "") === l4; });
+      if (hit) return hit;
+    }
+    return limitsDoc.cards.find(function (x) { return bankMatch(x.bank, card.name); }) || null;
+  }
+
+  async function loadLimits() {
+    try {
+      const resp = await fetch("./limits.json", { cache: "no-store" });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      limitsDoc = await resp.json();
+    } catch (e) {
+      console.warn("limits.json load failed", e);
+      limitsDoc = null;
+    }
+  }
+
+  function renderLimits() {
+    const wrap = document.getElementById("limitsGrid");
+    const hint = document.getElementById("limitsHint");
+    if (!limitsDoc || !limitsDoc.cards || !limitsDoc.cards.length) {
+      wrap.innerHTML = '<div class="lc-empty">暂无可用额度数据（等待短信接入推送）</div>';
+      hint.textContent = "";
+      return;
+    }
+    const sorted = limitsDoc.cards.slice().sort(function (a, b) {
+      return (b.available_limit || 0) - (a.available_limit || 0);
+    });
+    const totalAvail = limitsDoc.cards.reduce(function (s, x) { return s + Number(x.available_limit || 0); }, 0);
+    const totalLimit = limitsDoc.cards.reduce(function (s, x) { return s + Number(x.total_limit || 0); }, 0);
+    hint.textContent = "更新 " + (limitsDoc.updated_at || "—") +
+      " · 合计可用 " + fmtMoney(totalAvail) +
+      (totalLimit > 0 ? " / 总 " + fmtMoney(totalLimit) + " · 已用 " + ((1 - totalAvail / totalLimit) * 100).toFixed(1) + "%" : "");
+
+    wrap.innerHTML = sorted.map(function (x) {
+      const avail = Number(x.available_limit || 0);
+      const tot = Number(x.total_limit || 0);
+      const usedPct = tot > 0 ? Math.min(100, Math.max(0, (1 - avail / tot) * 100)) : null;
+      const valCls = usedPct == null ? "" : usedPct >= 80 ? " red" : usedPct >= 50 ? " yellow" : "";
+      const barCol = usedPct == null ? "var(--blue)" : usedPct >= 80 ? "var(--red)" : usedPct >= 50 ? "var(--orange)" : "var(--green)";
+      const srcLabel = x.source === "sms" ? "短信实时" : "手动登记";
+      const tsShort = x.event_ts ? String(x.event_ts).slice(5, 16) : "";
+      return '<div class="limit-card">' +
+        '<div class="lc-head">' + icoGeneric(x.bank, "#334155") +
+          '<div><div class="lc-name">' + esc(x.bank) +
+            (x.last4 ? ' <span class="lc-sub">****' + esc(x.last4) + "</span>" : "") + "</div>" +
+            '<div class="lc-sub">' + srcLabel + (tsShort ? " · " + esc(tsShort) : "") + "</div></div></div>" +
+        '<div class="lc-avail' + valCls + '">' + fmtMoney(avail) + "</div>" +
+        (tot > 0 ? '<div class="lc-total">总额度 ' + fmtLimit(tot) + " · 已用 " +
+          (usedPct != null ? usedPct.toFixed(1) + "%" : "—") + "</div>" : "") +
+        (usedPct != null ? '<div class="usage-bar"><i style="width:' + usedPct + "%;background:" + barCol + '"></i></div>' : "") +
+        "</div>";
+    }).join("");
+  }
 
   function dateOn(y, m, day) {
     const last = new Date(y, m + 1, 0).getDate();
@@ -866,6 +951,8 @@ tr.best { background: rgba(74,222,128,.07); }
     const best = rows[0];
     const warn = best.info.freeDays < 20;
     const bill = latestBillForCard(best.card);
+    const bestLim = limitFor(best.card);
+    const bestAvail = bestLim && bestLim.available_limit != null ? bestLim.available_limit : null;
     const rank = rows.slice(0, 6).map(function (r, i) {
       return '<span class="rank-chip"><span class="n">' + (i + 1) + "</span>" +
         ico(r.card, "md") + " " + esc(r.card.short || r.card.name) +
@@ -881,7 +968,8 @@ tr.best { background: rgba(74,222,128,.07); }
         '<div class="hero-stat"><div class="k">对应还款日</div><div class="v purple">' + fmtDate(best.info.dueDate) + "</div></div>" +
         '<div class="hero-stat"><div class="k">该卡待还 / 额度</div><div class="v yellow">' +
           (bill ? fmtMoney(bill.amount) : "暂无账单") +
-          '</div><div style="font-size:11px;color:var(--blue);margin-top:2px">额度 ' + fmtLimit(best.card.credit_limit || (bill && bill.credit_limit)) + "</div></div>" +
+          '</div><div style="font-size:11px;color:var(--blue);margin-top:2px">额度 ' + fmtLimit(best.card.credit_limit || (bill && bill.credit_limit)) +
+          (bestAvail != null ? " · 可用 " + fmtLimit(bestAvail) : "") + "</div></div>" +
       "</div>" +
       '<div class="hero-reason">选免息最长的卡刷（账单日/还款日以邮件为准）。' +
         (rows[1] ? " 次优 " + esc(rows[1].card.name) + "（" + rows[1].info.freeDays + " 天）。" : "") +
@@ -896,6 +984,11 @@ tr.best { background: rgba(74,222,128,.07); }
       const c = r.card, i = r.info;
       const bill = latestBillForCard(c);
       const lim = c.credit_limit || (bill && bill.credit_limit);
+      const limInfo = limitFor(c);
+      const availHtml = limInfo && limInfo.available_limit != null
+        ? '<span style="color:var(--green);font-weight:700">' + fmtLimit(limInfo.available_limit) + "</span>" +
+          (limInfo.source === "sms" ? '<div class="sub">短信</div>' : '<div class="sub">登记</div>')
+        : '<span style="color:var(--muted)">—</span>';
       const amtHtml = bill
         ? '<span style="color:var(--orange);font-weight:700">' + fmtMoney(bill.amount) + "</span>" +
           (bill.past ? '<div class="sub">已过期账单</div>' : "")
@@ -911,6 +1004,7 @@ tr.best { background: rgba(74,222,128,.07); }
           '<div class="sub">尾号 ' + esc(c.last4 || "—") + "</div></div></div></td>" +
         '<td class="num limit-val">' + fmtLimit(lim) +
           (limSrc ? '<div class="sub">' + limSrc + "</div>" : "") + "</td>" +
+        '<td class="num">' + availHtml + "</td>" +
         '<td class="num">每月 ' + c.statement_day + " 日" +
           (stmtSrc ? '<div class="sub">' + stmtSrc + "</div>" : "") + "</td>" +
         '<td class="num">每月 ' + c.due_day + " 日" +
@@ -1235,6 +1329,7 @@ tr.best { background: rgba(74,222,128,.07); }
     renderCardTable(rows);
     renderLoans();
     renderCalendar();
+    renderLimits();
   }
 
   function setBillStatus(text, cls) {
@@ -1406,9 +1501,9 @@ tr.best { background: rgba(74,222,128,.07); }
     }, { passive: true });
   })();
 
-  // 先渲染静态，再拉账单刷新
+  // 先渲染静态，再拉账单/额度刷新
   renderAllDynamic();
-  loadBills().then(function () { renderAllDynamic(); });
+  Promise.all([loadBills(), loadLimits()]).then(function () { renderAllDynamic(); });
 })();
 </script>
 </body>
