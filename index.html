@@ -450,9 +450,9 @@ tr.best { background: rgba(74,222,128,.07); }
     });
     const totalAvail = limitsDoc.cards.reduce(function (s, x) { return s + Number(x.available_limit || 0); }, 0);
     const totalLimit = limitsDoc.cards.reduce(function (s, x) { return s + Number(x.total_limit || 0); }, 0);
-    hint.textContent = "更新 " + (limitsDoc.updated_at || "—") +
-      " · 合计可用 " + fmtMoney(totalAvail) +
-      (totalLimit > 0 ? " / 总 " + fmtMoney(totalLimit) + " · 已用 " + ((1 - totalAvail / totalLimit) * 100).toFixed(1) + "%" : "");
+    hint.textContent = "更新 " + fmtStamp(limitsDoc.updated_at) +
+      " · 合计可用 " + fmtMoney0(totalAvail) +
+      (totalLimit > 0 ? " / 总 " + fmtMoney0(totalLimit) + " · 已用 " + ((1 - totalAvail / totalLimit) * 100).toFixed(1) + "%" : "");
 
     wrap.innerHTML = sorted.map(function (x) {
       const avail = Number(x.available_limit || 0);
@@ -461,13 +461,13 @@ tr.best { background: rgba(74,222,128,.07); }
       const valCls = usedPct == null ? "" : usedPct >= 80 ? " red" : usedPct >= 50 ? " yellow" : "";
       const barCol = usedPct == null ? "var(--blue)" : usedPct >= 80 ? "var(--red)" : usedPct >= 50 ? "var(--orange)" : "var(--green)";
       const srcLabel = x.source === "sms" ? "短信实时" : "手动登记";
-      const tsShort = x.event_ts ? String(x.event_ts).slice(5, 16) : "";
+      const tsShort = x.event_ts ? fmtStamp(x.event_ts) : "";
       return '<div class="limit-card">' +
         '<div class="lc-head">' + icoGeneric(x.bank, "#334155") +
           '<div><div class="lc-name">' + esc(x.bank) +
             (x.last4 ? ' <span class="lc-sub">****' + esc(x.last4) + "</span>" : "") + "</div>" +
             '<div class="lc-sub">' + srcLabel + (tsShort ? " · " + esc(tsShort) : "") + "</div></div></div>" +
-        '<div class="lc-avail' + valCls + '">' + fmtMoney(avail) + "</div>" +
+        '<div class="lc-avail' + valCls + '">' + fmtMoney0(avail) + "</div>" +
         (tot > 0 ? '<div class="lc-total">总额度 ' + fmtLimit(tot) + " · 已用 " +
           (usedPct != null ? usedPct.toFixed(1) + "%" : "—") + "</div>" : "") +
         (usedPct != null ? '<div class="usage-bar"><i style="width:' + usedPct + "%;background:" + barCol + '"></i></div>' : "") +
@@ -760,6 +760,15 @@ tr.best { background: rgba(74,222,128,.07); }
   function fmtLimit(n) {
     if (n == null || n === "" || Number(n) <= 0) return "—";
     return "¥" + Number(n).toLocaleString("zh-CN", { maximumFractionDigits: 0 });
+  }
+  /** 可用额度专用：整数无小数（2026-11-25 用户要求） */
+  function fmtMoney0(n) {
+    return "¥" + Math.round(Number(n || 0)).toLocaleString("zh-CN");
+  }
+  /** ISO 时间 → 「261125 14:50」（默认北京时间，不显示时区） */
+  function fmtStamp(s) {
+    const m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+    return m ? m[1].slice(2) + m[2] + m[3] + " " + m[4] + ":" + m[5] : (s || "—");
   }
 
   // ---- 免息 ----
