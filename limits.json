@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-25T18:24:58+08:00",
+  "updated_at": "2026-11-25T18:25:17+08:00",
   "source": "RBANK sms ingest auto push",
   "cards": [
     {
@@ -89,6 +89,14 @@
       "total_limit": 54000,
       "event_ts": "2026-11-25T10:00:00+08:00",
       "source": "manual"
+    },
+    {
+      "bank": "民生银行",
+      "last4": "",
+      "available_limit": 254.05,
+      "total_limit": null,
+      "event_ts": "2026-11-25T18:25:17+08:00",
+      "source": "sms"
     }
   ]
 }
