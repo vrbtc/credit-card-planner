@@ -1,19 +1,7 @@
 {
-  "generated_at": "2026-11-26 11:59:51",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-26 10:42:54)",
+  "generated_at": "2026-11-26 21:38:50",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-26 21:35:28)",
   "all_bills": [
-    {
-      "bank_name": "邮储银行",
-      "source_label": "",
-      "bank": "邮储银行",
-      "amount": 12387.05,
-      "due_date": "2026-11-26",
-      "due_day": 26,
-      "statement_date": "2026-11-06",
-      "statement_day": 6,
-      "credit_limit": 125000.0,
-      "subjects": []
-    },
     {
       "bank_name": "兴业银行",
       "source_label": "",
@@ -147,5 +135,5 @@
       "subjects": []
     }
   ],
-  "total_all": 195020.29
+  "total_all": 182633.24
 }
