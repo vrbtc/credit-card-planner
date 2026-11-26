@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T20:28:01+08:00",
+  "updated_at": "2026-11-26T22:56:08+08:00",
   "source": "RBANK sms ingest auto push",
   "cards": [
     {
@@ -69,9 +69,9 @@
     {
       "bank": "交通银行",
       "last4": "8940",
-      "available_limit": 20008.34,
+      "available_limit": 20004.34,
       "total_limit": 58000,
-      "event_ts": "2026-11-26T20:28:01+08:00",
+      "event_ts": "2026-11-26T22:56:08+08:00",
       "source": "sms"
     },
     {
