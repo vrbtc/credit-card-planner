@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-27 11:58:14",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-27 10:42:56)",
+  "generated_at": "2026-11-27 21:34:36",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-27 21:31:29)",
   "all_bills": [
     {
       "bank_name": "兴业银行",
@@ -123,6 +123,18 @@
       "subjects": []
     },
     {
+      "bank_name": "建设银行",
+      "source_label": "",
+      "bank": "建设银行",
+      "amount": 27802.8,
+      "due_date": "2026-12-15",
+      "due_day": 15,
+      "statement_date": "2026-11-26",
+      "statement_day": 26,
+      "credit_limit": 80000.0,
+      "subjects": []
+    },
+    {
       "bank_name": "长安银行",
       "source_label": "YY",
       "bank": "长安银行 (YY)",
@@ -135,5 +147,5 @@
       "subjects": []
     }
   ],
-  "total_all": 182633.24
+  "total_all": 210436.04
 }
