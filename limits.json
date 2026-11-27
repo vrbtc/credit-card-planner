@@ -89,14 +89,6 @@
       "total_limit": 54000,
       "event_ts": "2026-11-25T10:00:00+08:00",
       "source": "manual"
-    },
-    {
-      "bank": "交通银行",
-      "last4": "8437",
-      "available_limit": 20009.34,
-      "total_limit": null,
-      "event_ts": "2026-11-26T14:32:13+08:00",
-      "source": "sms"
     }
   ]
 }
