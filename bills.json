@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-28 11:45:53",
-  "source": "synced from bank-bill-extractor data.json (generated 2026-11-28 10:32:39)",
+  "generated_at": "2026-11-28 20:46:46",
+  "source": "synced from bank-bill-extractor data.json (generated 2026-11-28 20:44:51)",
   "all_bills": [
     {
       "bank_name": "兴业银行",
@@ -145,7 +145,19 @@
       "statement_day": 20,
       "credit_limit": null,
       "subjects": []
+    },
+    {
+      "bank_name": "民生银行",
+      "source_label": "",
+      "bank": "民生银行",
+      "amount": 28163.56,
+      "due_date": "2026-12-17",
+      "due_day": 17,
+      "statement_date": "2026-11-27",
+      "statement_day": 27,
+      "credit_limit": null,
+      "subjects": []
     }
   ],
-  "total_all": 210436.04
+  "total_all": 238599.6
 }
